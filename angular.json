@@ -2,5 +2,135 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "projects": {}
+  "projects": {
+    "health-wise-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/health-wise-app",
+      "sourceRoot": "projects/health-wise-app/src",
+      "prefix": "hwa",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "outputPath": "dist/health-wise-app",
+            "index": "projects/health-wise-app/src/index.html",
+            "main": "projects/health-wise-app/src/main.ts",
+            "polyfills": "projects/health-wise-app/src/polyfills.ts",
+            "tsConfig": "projects/health-wise-app/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/health-wise-app/src/favicon.ico",
+              "projects/health-wise-app/src/assets"
+            ],
+            "styles": [
+              "projects/health-wise-app/src/tailwind.scss",
+              "projects/health-wise-app/src/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "extra-webpack.config.js"
+            }
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/health-wise-app/src/environments/environment.ts",
+                  "with": "projects/health-wise-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "health-wise-app:build",
+            "customWebpackConfig": {
+              "path": "extra-webpack.config.js"
+            }
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "health-wise-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "health-wise-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/health-wise-app/src/test.ts",
+            "polyfills": "projects/health-wise-app/src/polyfills.ts",
+            "tsConfig": "projects/health-wise-app/tsconfig.spec.json",
+            "karmaConfig": "projects/health-wise-app/karma.conf.js",
+            "assets": [
+              "projects/health-wise-app/src/favicon.ico",
+              "projects/health-wise-app/src/assets"
+            ],
+            "styles": [
+              "projects/health-wise-app/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/health-wise-app/tsconfig.app.json",
+              "projects/health-wise-app/tsconfig.spec.json",
+              "projects/health-wise-app/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/health-wise-app/e2e/protractor.conf.js",
+            "devServerTarget": "health-wise-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "health-wise-app:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "health-wise-app"
 }
