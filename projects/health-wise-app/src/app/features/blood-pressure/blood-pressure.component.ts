@@ -11,20 +11,24 @@ import {
   ApexGrid,
   ApexTitleSubtitle,
   ApexLegend,
+  ApexFill,
+  ApexTooltip,
 } from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  stroke: ApexStroke;
+  chart: any; //ApexChart;
   dataLabels: ApexDataLabels;
   markers: ApexMarkers;
-  colors: string[];
-  yaxis: ApexYAxis;
-  grid: ApexGrid;
-  legend: ApexLegend;
   title: ApexTitleSubtitle;
+  fill: ApexFill;
+  yaxis: ApexYAxis;
+  xaxis: ApexXAxis;
+  tooltip: ApexTooltip;
+  stroke: ApexStroke;
+  grid: any; //ApexGrid;
+  colors: any;
+  toolbar: any;
 };
 
 @Component({
@@ -33,78 +37,161 @@ export type ChartOptions = {
   styleUrls: ['./blood-pressure.component.scss'],
 })
 export class BloodPressureComponent implements OnInit {
-  @ViewChild('chart') chart: ChartComponent;
-  public chartOptions: Partial<ChartOptions>;
+  public chart1options: Partial<ChartOptions>;
+  public chart2options: Partial<ChartOptions>;
+  public chart3options: Partial<ChartOptions>;
+  public commonOptions: Partial<ChartOptions> = {
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    toolbar: {
+      tools: {
+        selection: false,
+      },
+    },
+    markers: {
+      size: 6,
+      hover: {
+        size: 10,
+      },
+    },
+    tooltip: {
+      followCursor: false,
+      theme: 'dark',
+      x: {
+        show: false,
+      },
+      marker: {
+        show: false,
+      },
+      y: {
+        title: {
+          formatter: function () {
+            return '';
+          },
+        },
+      },
+    },
+    grid: {
+      clipMarkers: false,
+    },
+    xaxis: {
+      type: 'datetime',
+    },
+  };
 
   constructor() {
-    this.chartOptions = {
+    this.initCharts();
+  }
+
+  public initCharts(): void {
+    this.chart1options = {
       series: [
         {
-          name: 'High - 2013',
-          data: [28, 29, 33, 36, 32, 32, 33],
-        },
-        {
-          name: 'Low - 2013',
-          data: [12, 11, 14, 18, 17, 13, 13],
+          name: 'Systole',
+          data: this.generateDayWiseTimeSeries(new Date('03 Jul 2020'), [
+            120,
+            119,
+            119,
+          ]),
         },
       ],
-      chart: {
-        height: 350,
-        type: 'line',
-        dropShadow: {
-          enabled: true,
-          color: '#000',
-          top: 18,
-          left: 7,
-          blur: 10,
-          opacity: 0.2,
-        },
-        toolbar: {
-          show: false,
-        },
-      },
-      colors: ['#77B6EA', '#545454'],
-      dataLabels: {
-        enabled: true,
-      },
-      stroke: {
-        curve: 'smooth',
-      },
       title: {
-        text: 'Average High & Low Temperature',
-        align: 'left',
+        text: 'Systole',
       },
-      grid: {
-        borderColor: '#e7e7e7',
-        row: {
-          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
+      chart: {
+        id: 'systole',
+        group: 'blood-pressure',
+        type: 'area',
+        height: 160,
       },
-      markers: {
-        size: 1,
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-        title: {
-          text: 'Month',
-        },
-      },
+      colors: ['#008FFB'],
       yaxis: {
-        title: {
-          text: 'Temperature',
+        tickAmount: 2,
+        labels: {
+          minWidth: 40,
         },
-        min: 5,
-        max: 40,
-      },
-      legend: {
-        position: 'top',
-        horizontalAlign: 'right',
-        floating: true,
-        offsetY: -25,
-        offsetX: -5,
       },
     };
+
+    this.chart2options = {
+      series: [
+        {
+          name: 'Diastole',
+          data: this.generateDayWiseTimeSeries(new Date('03 Jul 2020'), [
+            81,
+            80,
+            80,
+          ]),
+        },
+      ],
+      title: {
+        text: 'Diastole',
+      },
+      chart: {
+        id: 'diastole',
+        group: 'blood-pressure',
+        type: 'area',
+        height: 160,
+      },
+      colors: ['#546E7A'],
+      yaxis: {
+        tickAmount: 2,
+        labels: {
+          minWidth: 40,
+        },
+      },
+    };
+
+    this.chart3options = {
+      series: [
+        {
+          name: 'Heart rate',
+          data: this.generateDayWiseTimeSeries(new Date('03 Jul 2020'), [
+            88,
+            79,
+            80,
+          ]),
+        },
+      ],
+      title: {
+        text: 'Heart rate',
+      },
+      chart: {
+        id: 'heart-rate',
+        group: 'blood-pressure',
+        type: 'area',
+        height: 160,
+      },
+      colors: ['#00E396'],
+      yaxis: {
+        tickAmount: 2,
+        labels: {
+          minWidth: 40,
+        },
+      },
+    };
+  }
+
+  public generateDayWiseTimeSeries(startDate: Date, readings: number[]): any[] {
+    const series: any[] = [];
+    let start = new Date(2020, 7, 3);
+    const dateTimeFormat = new Intl.DateTimeFormat('en', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    });
+    readings.forEach((reading) => {
+      const x = start;
+      series.push([dateTimeFormat.format(x), reading]);
+
+      start = new Date(start);
+      start.setDate(start.getDate() + 1);
+    });
+    return series;
   }
 
   ngOnInit(): void {}
