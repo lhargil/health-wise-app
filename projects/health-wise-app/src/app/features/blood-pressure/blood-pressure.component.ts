@@ -29,6 +29,7 @@ export type ChartOptions = {
   grid: any; //ApexGrid;
   colors: any;
   toolbar: any;
+  legend: ApexLegend;
 };
 
 @Component({
@@ -80,6 +81,15 @@ export class BloodPressureComponent implements OnInit {
     },
     xaxis: {
       type: 'datetime',
+      labels: {
+        datetimeUTC: false,
+        format: 'dd-MMM',
+      },
+    },
+    yaxis: {
+      forceNiceScale: true,
+      tickAmount: 6,
+      decimalsInFloat: 0,
     },
   };
 
@@ -110,7 +120,6 @@ export class BloodPressureComponent implements OnInit {
       },
       colors: ['#008FFB'],
       yaxis: {
-        tickAmount: 2,
         labels: {
           minWidth: 40,
         },
@@ -178,7 +187,7 @@ export class BloodPressureComponent implements OnInit {
 
   public generateDayWiseTimeSeries(startDate: Date, readings: number[]): any[] {
     const series: any[] = [];
-    let start = new Date(2020, 7, 3);
+    let start = startDate.getTime();
     const dateTimeFormat = new Intl.DateTimeFormat('en', {
       year: 'numeric',
       month: 'short',
@@ -186,10 +195,9 @@ export class BloodPressureComponent implements OnInit {
     });
     readings.forEach((reading) => {
       const x = start;
-      series.push([dateTimeFormat.format(x), reading]);
+      series.push([x, reading]);
 
-      start = new Date(start);
-      start.setDate(start.getDate() + 1);
+      start += 86400000;
     });
     return series;
   }
