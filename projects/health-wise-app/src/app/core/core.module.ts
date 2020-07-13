@@ -4,10 +4,11 @@ import { ClassicLayoutModule } from './layout/classic-layout/classic-layout.modu
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [],
   imports: [BrowserModule, RouterModule],
-  exports: [BrowserModule, RouterModule],
+  exports: [BrowserModule, RouterModule, BrowserAnimationsModule],
 })
 export class CoreModule {}

@@ -34,7 +34,14 @@
             "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js"
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "angular-calendar",
+              "calendar-utils/date-adapters/date-fns",
+              "@mattlewis92/dom-autoscroller",
+              "dom-set",
+              "dom-plane"
+            ]
           },
           "configurations": {
             "production": {

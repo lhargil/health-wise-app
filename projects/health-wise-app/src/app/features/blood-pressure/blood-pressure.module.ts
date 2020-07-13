@@ -6,21 +6,27 @@ import { BloodPressureComponent } from './blood-pressure.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { BloodPressureFormShellComponent } from './blood-pressure-form/blood-pressure-form-shell.component';
 import { BloodPressureFormComponent } from './blood-pressure-form/blood-pressure-form.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CoreModule } from '../../core/core.module';
 import { SharedModule } from '../../shared/shared.module';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { BpCalendarComponent } from './bp-calendar/bp-calendar.component';
 
 @NgModule({
   declarations: [
     BloodPressureComponent,
     BloodPressureFormShellComponent,
     BloodPressureFormComponent,
+    BpCalendarComponent,
   ],
   imports: [
     CommonModule,
     BloodPressureRoutingModule,
     NgApexchartsModule,
     SharedModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
 })
 export class BloodPressureModule {}

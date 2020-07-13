@@ -4,6 +4,7 @@ import { SlideInModule } from './slide-in/slide-in.module';
 import { ContentHostModule } from './directives/content-host/content-host.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChartWrapperModule } from './chart-wrapper/chart-wrapper.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [],
