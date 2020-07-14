@@ -22,7 +22,7 @@ export class BloodPressureFormShellComponent
   formData: BloodPressureReading;
   formIsValid$: Observable<boolean>;
 
-  constructor() {}
+  constructor() { }
 
   formSubmit(callback: (data: BloodPressureReading) => void) {
     this.formGroup.markAllAsTouched();
@@ -34,13 +34,7 @@ export class BloodPressureFormShellComponent
   }
 
   ngOnInit(): void {
-    this.formGroup = this.bloodPressureFormComponent.createGroup({
-      id: '',
-      systole: 120,
-      diastole: 80,
-      heartRate: 80,
-      dateAdded: new Date().toISOString(),
-    });
+    this.formGroup = this.bloodPressureFormComponent.createGroup(this.formData);
     this.formIsValid$ = this.formGroup.statusChanges.pipe(
       map((status: string) => status.toLowerCase() == 'valid')
     );

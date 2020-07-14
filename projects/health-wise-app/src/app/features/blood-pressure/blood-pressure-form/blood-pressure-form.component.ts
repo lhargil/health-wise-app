@@ -11,9 +11,9 @@ import { FormGroupConfig } from '../../../core/interfaces';
 })
 export class BloodPressureFormComponent implements OnInit {
   bloodPressureForm: FormGroup;
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   createGroup(bloodPressureReading: BloodPressureReading) {
     const config: FormGroupConfig<BloodPressureReading> = {
@@ -21,7 +21,7 @@ export class BloodPressureFormComponent implements OnInit {
       systole: [bloodPressureReading.systole, [Validators.required]],
       diastole: [bloodPressureReading.diastole, [Validators.required]],
       heartRate: [bloodPressureReading.heartRate, [Validators.required]],
-      dateAdded: [new Date().toISOString()],
+      dateAdded: [bloodPressureReading.dateAdded],
     };
 
     this.bloodPressureForm = this.fb.group(config);

@@ -31,7 +31,9 @@
               "projects/health-wise-app/src/tailwind.scss",
               "projects/health-wise-app/src/styles.scss"
             ],
-            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
+            "scripts": [
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+            ],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js"
             },
@@ -105,7 +107,9 @@
               "projects/health-wise-app/src/favicon.ico",
               "projects/health-wise-app/src/assets"
             ],
-            "styles": ["projects/health-wise-app/src/styles.scss"],
+            "styles": [
+              "projects/health-wise-app/src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -117,7 +121,9 @@
               "projects/health-wise-app/tsconfig.spec.json",
               "projects/health-wise-app/e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {
@@ -135,5 +141,8 @@
       }
     }
   },
-  "defaultProject": "health-wise-app"
+  "defaultProject": "health-wise-app",
+  "cli": {
+    "analytics": false
+  }
 }
