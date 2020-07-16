@@ -100,9 +100,9 @@ export class BpCalendarComponent implements OnInit {
 
   activeDayIsOpen: boolean = true;
 
-  constructor(private slideInService: SlideInService) {}
+  constructor(private slideInService: SlideInService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -120,6 +120,7 @@ export class BpCalendarComponent implements OnInit {
         this.slideInService.show({
           heading: 'Add new blood pressure reading',
           formData: {
+            id: 'person123',
             systole: 130,
             diastole: 80,
             heartRate: 80,
@@ -137,6 +138,7 @@ export class BpCalendarComponent implements OnInit {
   handleSave(): (eventData: any) => void {
     return (updatedBloodPressureReading: BloodPressureReading) => {
       this.addEvent({
+        id: updatedBloodPressureReading.id,
         title: `Systole: ${updatedBloodPressureReading.systole}. Diastole: ${updatedBloodPressureReading.diastole}. Heart rate: ${updatedBloodPressureReading.heartRate}`,
         start: startOfDay(
           parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())
@@ -146,6 +148,7 @@ export class BpCalendarComponent implements OnInit {
         ),
         color: colors.red,
       });
+
     };
   }
 
@@ -169,6 +172,7 @@ export class BpCalendarComponent implements OnInit {
 
   handleEvent(action: string, event: CalendarEvent): void {
     this.modalData = { event, action };
+    console.log(event);
     // this.modal.open(this.modalContent, { size: 'lg' });
     /*
     this.addEvent({
@@ -186,6 +190,7 @@ export class BpCalendarComponent implements OnInit {
   }
 
   addEvent(eventToAdd: any): void {
+    console.log(eventToAdd);
     this.events = [...this.events, eventToAdd];
     console.log(this.events);
   }

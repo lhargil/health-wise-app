@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
+    "start:local": "npm run start -- --port=5200",
     "build": "ng build",
     "build:prod": "npm run build -- --prod",
     "test": "ng test",
