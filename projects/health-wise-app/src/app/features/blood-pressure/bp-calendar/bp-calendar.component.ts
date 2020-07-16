@@ -84,19 +84,6 @@ export class BpCalendarComponent implements OnInit {
 
   events: CalendarEvent[] = [
     {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
-      color: colors.red,
-      actions: this.actions,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-    {
       start: startOfDay(new Date()),
       title: 'An event with no end date',
       color: colors.yellow,
@@ -109,25 +96,13 @@ export class BpCalendarComponent implements OnInit {
       color: colors.blue,
       allDay: true,
     },
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
-      color: colors.yellow,
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
   ];
 
   activeDayIsOpen: boolean = true;
 
-  constructor(private slideInService: SlideInService) { }
+  constructor(private slideInService: SlideInService) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -136,10 +111,8 @@ export class BpCalendarComponent implements OnInit {
         events.length === 0
       ) {
         this.activeDayIsOpen = false;
-
       } else {
         this.activeDayIsOpen = true;
-
       }
       this.viewDate = date;
 
@@ -150,12 +123,14 @@ export class BpCalendarComponent implements OnInit {
             systole: 130,
             diastole: 80,
             heartRate: 80,
-            dateAdded: date.toLocaleDateString()
+            dateAdded: date.toLocaleDateString(),
           },
           modalMode: ModalModes.Create,
           component: BloodPressureFormShellComponent,
           handleSave: this.handleSave(),
         });
+      } else {
+        console.log('Edit reading');
       }
     }
   }
@@ -163,8 +138,12 @@ export class BpCalendarComponent implements OnInit {
     return (updatedBloodPressureReading: BloodPressureReading) => {
       this.addEvent({
         title: `Systole: ${updatedBloodPressureReading.systole}. Diastole: ${updatedBloodPressureReading.diastole}. Heart rate: ${updatedBloodPressureReading.heartRate}`,
-        start: startOfDay(parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())),
-        end: endOfDay(parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())),
+        start: startOfDay(
+          parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())
+        ),
+        end: endOfDay(
+          parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())
+        ),
         color: colors.red,
       });
     };
@@ -204,14 +183,10 @@ export class BpCalendarComponent implements OnInit {
         },
       });
     */
-
   }
 
   addEvent(eventToAdd: any): void {
-    this.events = [
-      ...this.events,
-      eventToAdd
-    ];
+    this.events = [...this.events, eventToAdd];
     console.log(this.events);
   }
 
