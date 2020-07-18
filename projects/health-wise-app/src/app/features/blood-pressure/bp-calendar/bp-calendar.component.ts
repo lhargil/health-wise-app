@@ -1,32 +1,10 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ViewChild,
-  TemplateRef,
-  OnInit,
-} from '@angular/core';
-import {
-  startOfDay,
-  endOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
-  isSameDay,
-  isSameMonth,
-  addHours,
-  parse,
-} from 'date-fns';
-import { Subject } from 'rxjs';
-import {
-  CalendarEvent,
-  CalendarEventAction,
-  CalendarEventTimesChangedEvent,
-  CalendarView,
-} from 'angular-calendar';
+import { Component, OnInit, Input } from '@angular/core';
+import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
+import { startOfDay, subDays, endOfMonth, addDays, isSameMonth, isSameDay, parse, endOfDay } from 'date-fns';
 import { SlideInService } from '../../../shared/slide-in/slide-in.service';
+import { ModalModes } from '../../../shared/slide-in/modal-state';
 import { BloodPressureFormShellComponent } from '../blood-pressure-form/blood-pressure-form-shell.component';
 import { BloodPressureReading } from '../../../core/models';
-import { ModalModes } from '../../../shared/slide-in/modal-state';
 
 const colors: any = {
   red: {
@@ -49,62 +27,62 @@ const colors: any = {
   styleUrls: ['./bp-calendar.component.scss'],
 })
 export class BpCalendarComponent implements OnInit {
-  // @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-
-  view: CalendarView = CalendarView.Month;
-
-  CalendarView = CalendarView;
-
-  viewDate: Date = new Date();
-
-  modalData: {
-    action: string;
-    event: CalendarEvent;
-  };
-
-  actions: CalendarEventAction[] = [
-    {
-      label: 'Edit event',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
-      },
-    },
-    {
-      label: 'Delete event',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.handleEvent('Deleted', event);
-      },
-    },
-  ];
-
-  refresh: Subject<any> = new Subject();
-
   events: CalendarEvent[] = [
     {
+      id: '',
       start: startOfDay(new Date()),
       title: 'An event with no end date',
-      color: colors.yellow,
-      actions: this.actions,
+      color: colors.blue,
     },
     {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
+      id: '',
+      start: subDays(endOfMonth(new Date()), 1),
       title: 'A long event that spans 2 months',
       color: colors.blue,
-      allDay: true,
     },
   ];
-
-  activeDayIsOpen: boolean = true;
-
+  viewDate = new Date();
+  view: CalendarView = CalendarView.Month;
+  activeDayIsOpen = false;
   constructor(private slideInService: SlideInService) { }
-
   ngOnInit() { }
 
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  deleteEvent(eventToDelete: CalendarEvent) {
+    this.events = this.events.filter((event) => event !== eventToDelete);
+  }
+
+  addEvent(eventToAdd: any): void {
+    this.events = [...this.events, eventToAdd];
+  }
+
+  handleEvent(action: string, event: CalendarEvent): void {
+    // this.modalData = { event, action };
+  }
+
+  eventTimesChanged({
+    event,
+    newStart,
+    newEnd,
+  }: CalendarEventTimesChangedEvent): void {
+    this.events = this.events.map((iEvent) => {
+      if (iEvent === event) {
+        return {
+          ...event,
+          start: newStart,
+          end: newEnd,
+        };
+      }
+      return iEvent;
+    });
+    this.handleEvent('Dropped or resized', event);
+  }
+
+  onCalendarNagivated(date: Date) {
+    this.viewDate = date;
+    this.activeDayIsOpen = false;
+  }
+
+  onDayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       if (
         (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
@@ -135,6 +113,7 @@ export class BpCalendarComponent implements OnInit {
       }
     }
   }
+
   handleSave(): (eventData: any) => void {
     return (updatedBloodPressureReading: BloodPressureReading) => {
       this.addEvent({
@@ -150,60 +129,5 @@ export class BpCalendarComponent implements OnInit {
       });
 
     };
-  }
-
-  eventTimesChanged({
-    event,
-    newStart,
-    newEnd,
-  }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
-  }
-
-  handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    console.log(event);
-    // this.modal.open(this.modalContent, { size: 'lg' });
-    /*
-    this.addEvent({
-        title: 'New event',
-        start: startOfDay(date),
-        end: endOfDay(date),
-        color: colors.red,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      });
-    */
-  }
-
-  addEvent(eventToAdd: any): void {
-    console.log(eventToAdd);
-    this.events = [...this.events, eventToAdd];
-    console.log(this.events);
-  }
-
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
-  }
-
-  setView(view: CalendarView) {
-    this.view = view;
-  }
-
-  closeOpenMonthViewDay() {
-    this.activeDayIsOpen = false;
   }
 }

@@ -23,10 +23,6 @@ import { BpCalendarComponent } from './bp-calendar/bp-calendar.component';
     BloodPressureRoutingModule,
     NgApexchartsModule,
     SharedModule,
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    }),
   ],
 })
-export class BloodPressureModule {}
+export class BloodPressureModule { }
