@@ -4,6 +4,8 @@ import {
   ChartOptions,
   ChartWrapperComponent,
 } from '../../shared/chart-wrapper/chart-wrapper.component';
+import { BloodPressureReadingsService } from '../../core/services/blood-pressure-readings.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'hwa-dashboard',
@@ -71,32 +73,19 @@ export class DashboardComponent implements OnInit {
     },
   };
 
-  private bloodPressureReadings: BloodPressureReading[] = [
-    {
-      id: 'a',
-      systole: 120,
-      diastole: 81,
-      heartRate: 88,
-      dateAdded: new Date('03 Jul 2020').toISOString(),
-    },
-    {
-      id: 'b',
-      systole: 119,
-      diastole: 80,
-      heartRate: 79,
-      dateAdded: new Date('04 Jul 2020').toISOString(),
-    },
-    {
-      id: 'c',
-      systole: 119,
-      diastole: 80,
-      heartRate: 80,
-      dateAdded: new Date('05 Jul 2020').toISOString(),
-    },
-  ];
+  public bloodPressureReadings: BloodPressureReading[] = [];
 
-  constructor() {
-    this.initCharts();
+  bloodPressureReadings$ = this.bloodPressureReadingsService.getReadings();
+
+  constructor(private bloodPressureReadingsService: BloodPressureReadingsService) {
+  }
+
+  ngOnInit(): void {
+    this.bloodPressureReadings$
+      .pipe(
+        tap(readings => this.bloodPressureReadings = readings),
+        tap(_ => this.initCharts())
+      ).subscribe();
   }
 
   public initCharts(): void {
@@ -221,5 +210,4 @@ export class DashboardComponent implements OnInit {
     return series;
   }
 
-  ngOnInit(): void {}
 }
