@@ -1,3 +1,6 @@
-<hwa-calendar-wrapper [events]="events" [viewDate]="viewDate" [activeDayIsOpen]="activeDayIsOpen" [view]="view"
-  (navigateCalendar)="onCalendarNagivated($event)" (dayClicked)="onDayClicked($event)">
-</hwa-calendar-wrapper>
+<ng-container *ngIf="readings$ | async as readings">
+  <hwa-calendar-wrapper [events]="readings" [viewDate]="viewDate" [activeDayIsOpen]="activeDayIsOpen" [view]="view"
+    (navigateCalendar)="onCalendarNagivated($event)" (dayClicked)="onDayClicked($event)"
+    (eventClicked)="eventClicked($event)">
+  </hwa-calendar-wrapper>
+</ng-container>

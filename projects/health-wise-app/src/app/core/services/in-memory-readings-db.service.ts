@@ -1,31 +1,30 @@
-import { Injectable } from '@angular/core';
-import { CoreModule } from '../core.module';
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { BloodPressureReading } from '../models';
+import { v4 as uuidv4 } from 'uuid';
 
 export class InMemoryReadingsDbService implements InMemoryDbService {
   createDb() {
     const readings = [
       {
-        id: 'a',
+        id: uuidv4(),
         systole: 120,
         diastole: 81,
         heartRate: 88,
-        dateAdded: new Date('03 Jul 2020').toISOString(),
+        dateAdded: new Date('2020-07-03T00:00:00Z').toISOString(),
       },
       {
-        id: 'b',
+        id: uuidv4(),
         systole: 119,
         diastole: 80,
         heartRate: 79,
-        dateAdded: new Date('04 Jul 2020').toISOString(),
+        dateAdded: new Date('2020-07-04T00:00:00Z').toISOString(),
       },
       {
-        id: 'c',
+        id: uuidv4(),
         systole: 119,
         diastole: 80,
         heartRate: 80,
-        dateAdded: new Date('05 Jul 2020').toISOString(),
+        dateAdded: new Date('2020-07-05T00:00:00Z').toISOString(),
       },
     ] as BloodPressureReading[];
     return { readings };

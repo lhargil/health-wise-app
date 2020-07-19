@@ -1,10 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
-import { startOfDay, subDays, endOfMonth, addDays, isSameMonth, isSameDay, parse, endOfDay } from 'date-fns';
+import { startOfDay, isSameMonth, isSameDay, parseISO } from 'date-fns';
 import { SlideInService } from '../../../shared/slide-in/slide-in.service';
 import { ModalModes } from '../../../shared/slide-in/modal-state';
 import { BloodPressureFormShellComponent } from '../blood-pressure-form/blood-pressure-form-shell.component';
 import { BloodPressureReading } from '../../../core/models';
+import { BloodPressureReadingsService } from '../../../core/services/blood-pressure-readings.service';
+import { map, tap } from 'rxjs/operators';
+import { combineLatest, BehaviorSubject } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 const colors: any = {
   red: {
@@ -27,54 +31,79 @@ const colors: any = {
   styleUrls: ['./bp-calendar.component.scss'],
 })
 export class BpCalendarComponent implements OnInit {
-  events: CalendarEvent[] = [
-    {
-      id: '',
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
-      color: colors.blue,
-    },
-    {
-      id: '',
-      start: subDays(endOfMonth(new Date()), 1),
-      title: 'A long event that spans 2 months',
-      color: colors.blue,
-    },
-  ];
   viewDate = new Date();
   view: CalendarView = CalendarView.Month;
   activeDayIsOpen = false;
-  constructor(private slideInService: SlideInService) { }
+
+  private addReadingSubject = new BehaviorSubject<BloodPressureReading | undefined>(undefined);
+  private clickedReadingSubject = new BehaviorSubject<string | number | undefined>(undefined);
+  private readingToEdit: BloodPressureReading;
+  clickedReading$ = this.clickedReadingSubject.asObservable();
+  addReading$ = this.addReadingSubject.asObservable();
+  readings$ = combineLatest(
+    [
+      this.addReading$,
+      this.clickedReading$,
+      this.bloodPressureService.getReadings()
+    ]
+  ).pipe(
+
+    tap(([_, clickedReadingId, readings]) => {
+      if (clickedReadingId) {
+        const toEdit = readings.find(reading => reading.id == clickedReadingId);
+        if (!toEdit) {
+          return;
+        }
+        this.readingToEdit = toEdit;
+      }
+    }),
+    map(([updatedReading, _, readings]) => {
+      if (updatedReading) {
+        readings.push(updatedReading);
+      }
+      return readings.map((reading: BloodPressureReading) => {
+        return {
+          id: reading.id,
+          title: `Systole: ${reading.systole} | Diastole: ${reading.diastole} | Heart rate: ${reading.heartRate}`,
+          start: startOfDay(
+            parseISO(reading.dateAdded)
+          ),
+          allDay: true,
+          color: colors.red,
+        } as CalendarEvent;
+      });
+    }),
+  );
+
+  constructor(private slideInService: SlideInService, private bloodPressureService: BloodPressureReadingsService) { }
   ngOnInit() { }
 
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
+  deleteEvent() {
+    // this.events = this.events.filter((event) => event !== eventToDelete);
   }
 
-  addEvent(eventToAdd: any): void {
-    this.events = [...this.events, eventToAdd];
+  addEvent(): void {
+    // this.events = [...this.events, eventToAdd];
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
+  handleEvent(): void {
     // this.modalData = { event, action };
   }
 
   eventTimesChanged({
     event,
-    newStart,
-    newEnd,
   }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
+    // this.events = this.events.map((iEvent) => {
+    //   if (iEvent === event) {
+    //     return {
+    //       ...event,
+    //       start: newStart,
+    //       end: newEnd,
+    //     };
+    //   }
+    //   return iEvent;
+    // });
+    this.handleEvent();
   }
 
   onCalendarNagivated(date: Date) {
@@ -98,36 +127,38 @@ export class BpCalendarComponent implements OnInit {
         this.slideInService.show({
           heading: 'Add new blood pressure reading',
           formData: {
-            id: 'person123',
+            id: '',
             systole: 130,
             diastole: 80,
             heartRate: 80,
-            dateAdded: date.toLocaleDateString(),
+            dateAdded: date.toISOString(),
           },
           modalMode: ModalModes.Create,
           component: BloodPressureFormShellComponent,
           handleSave: this.handleSave(),
         });
-      } else {
-        console.log('Edit reading');
       }
     }
   }
 
+  eventClicked({ event }: { event: CalendarEvent }) {
+    this.clickedReadingSubject.next(event.id);
+    this.slideInService.show({
+      heading: 'Edit blood pressure reading',
+      formData: { ...this.readingToEdit },
+      modalMode: ModalModes.Update,
+      component: BloodPressureFormShellComponent,
+      handleSave: this.handleSave(),
+    });
+  }
+
   handleSave(): (eventData: any) => void {
     return (updatedBloodPressureReading: BloodPressureReading) => {
-      this.addEvent({
-        id: updatedBloodPressureReading.id,
-        title: `Systole: ${updatedBloodPressureReading.systole}. Diastole: ${updatedBloodPressureReading.diastole}. Heart rate: ${updatedBloodPressureReading.heartRate}`,
-        start: startOfDay(
-          parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())
-        ),
-        end: endOfDay(
-          parse(updatedBloodPressureReading.dateAdded, 'M/dd/yyyy', new Date())
-        ),
-        color: colors.red,
-      });
-
+      if (!updatedBloodPressureReading.id) {
+        updatedBloodPressureReading.id = uuidv4();
+        this.bloodPressureService.addReading(updatedBloodPressureReading)
+          .subscribe(_ => this.addReadingSubject.next(updatedBloodPressureReading));
+      }
     };
   }
 }
