@@ -34,9 +34,6 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
     heading: string;
     showDelete: boolean;
   };
-  destroyed$ = new Subject();
-
-  formIsInvalid$: Observable<any>;
 
   private loadedComponent: any;
   private clickedOutside$ = fromEvent(window, 'click').pipe(
@@ -44,6 +41,9 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
       return ev.target.id.includes('slide-in-container');
     })
   );
+  destroyed$ = new Subject();
+  formIsInvalid$: Observable<any>;
+  open = false;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {
     this.saveClicked = new EventEmitter<any>();
@@ -69,6 +69,9 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
       map((valid: boolean) => !valid),
       takeUntil(this.destroyed$)
     );
+    setTimeout(() => {
+      this.open = true;
+    }, 200);
   }
 
   private loadComponent() {
@@ -97,6 +100,9 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   close() {
-    this.closeClicked.emit({});
+    this.open = false;
+    setTimeout(() => {
+      this.closeClicked.emit({});
+    }, 500);
   }
 }
