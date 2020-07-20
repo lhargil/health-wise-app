@@ -71,7 +71,7 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     setTimeout(() => {
       this.open = true;
-    }, 200);
+    });
   }
 
   private loadComponent() {
@@ -96,7 +96,7 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   delete() {
-    this.deleteClicked.emit({});
+    this.deleteClicked.emit(this.content.formData);
   }
 
   close() {

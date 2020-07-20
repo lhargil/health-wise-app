@@ -23,7 +23,7 @@ export class SlideInHostComponent implements OnInit {
   constructor(
     private slideInService: SlideInService,
     private componentFactoryResolver: ComponentFactoryResolver
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.slideInService.notification$.subscribe(
@@ -46,6 +46,9 @@ export class SlideInHostComponent implements OnInit {
       });
       if (modalState.handleDelete) {
         refs.component.deleteClicked.subscribe((eventData: any) => {
+          if (modalState.handleDelete) {
+            modalState.handleDelete(eventData);
+          }
           // this.dialogService.confirm({
           //   heading: modalState.dialog.heading,
           //   message: modalState.dialog.message,

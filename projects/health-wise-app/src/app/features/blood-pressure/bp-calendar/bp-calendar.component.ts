@@ -38,39 +38,51 @@ export class BpCalendarComponent implements OnInit {
   private addReadingSubject = new BehaviorSubject<BloodPressureReading | undefined>(undefined);
   private clickedReadingSubject = new BehaviorSubject<string | number | undefined>(undefined);
   private editReadingSubject = new BehaviorSubject<BloodPressureReading | undefined>(undefined);
+  private deleteReadingSubject = new BehaviorSubject<string | number | undefined>(undefined);
   private readingToEdit: BloodPressureReading;
   clickedReading$ = this.clickedReadingSubject.asObservable();
   addReading$ = this.addReadingSubject.asObservable();
   editReading$ = this.editReadingSubject.asObservable();
+  deleteReading$ = this.deleteReadingSubject.asObservable();
 
   readings$ = combineLatest(
     [
       this.addReading$,
       this.clickedReading$,
       this.editReading$,
+      this.deleteReading$,
       this.bloodPressureService.getReadings()
     ]
   ).pipe(
-    tap(([_, clickedReadingId, __, readings]) => {
+    tap(([_, clickedReadingId, __, ___, readings]) => {
       if (clickedReadingId) {
-        const toEdit = readings.find(reading => reading.id == clickedReadingId);
+        const toEdit = readings.find((reading: BloodPressureReading) => reading.id == clickedReadingId);
         if (!toEdit) {
           return;
         }
         this.readingToEdit = { ...toEdit };
       }
     }),
-    tap(([_, __, editedReading, readings]) => {
+    tap(([_, __, editedReading, ___, readings]) => {
       if (!editedReading) {
         return;
       }
-      const indexOfEdited = readings.findIndex(reading => reading.id == editedReading.id);
+      const indexOfEdited = readings.findIndex((reading: BloodPressureReading) => reading.id == editedReading.id);
       if (indexOfEdited == -1) {
         return;
       }
       readings.splice(indexOfEdited, 1, editedReading);
     }),
-    map(([updatedReading, _, __, readings]) => {
+    tap(([_, __, ___, deleteId, readings]) => {
+      const indexOfDeleted = readings.findIndex((reading: BloodPressureReading) => reading.id == deleteId);
+
+      if (indexOfDeleted == -1) {
+        return;
+      }
+
+      readings.splice(indexOfDeleted, 1);
+    }),
+    map(([updatedReading, _, __, ___, readings]) => {
       if (updatedReading) {
         readings.push(updatedReading);
       }
@@ -124,6 +136,18 @@ export class BpCalendarComponent implements OnInit {
     this.activeDayIsOpen = false;
   }
 
+  eventClicked({ event }: { event: CalendarEvent }) {
+    this.clickedReadingSubject.next(event.id);
+    this.slideInService.show({
+      heading: 'Edit blood pressure reading',
+      formData: { ...this.readingToEdit },
+      modalMode: ModalModes.Update,
+      component: BloodPressureFormShellComponent,
+      handleSave: this.handleSave(),
+      handleDelete: this.handleDelete()
+    });
+  }
+
   onDayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       if (
@@ -154,15 +178,17 @@ export class BpCalendarComponent implements OnInit {
     }
   }
 
-  eventClicked({ event }: { event: CalendarEvent }) {
-    this.clickedReadingSubject.next(event.id);
-    this.slideInService.show({
-      heading: 'Edit blood pressure reading',
-      formData: { ...this.readingToEdit },
-      modalMode: ModalModes.Update,
-      component: BloodPressureFormShellComponent,
-      handleSave: this.handleSave(),
-    });
+  handleDelete(): (eventData: any) => void {
+    return (bloodPressureReading: BloodPressureReading) => {
+      if (!bloodPressureReading) {
+        return;
+      }
+      this.bloodPressureService.deleteReading(bloodPressureReading.id)
+        .subscribe(_ => {
+          this.deleteReadingSubject.next(bloodPressureReading.id);
+          this.activeDayIsOpen = false;
+        });
+    };
   }
 
   handleSave(): (eventData: any) => void {

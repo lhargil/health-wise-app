@@ -28,4 +28,8 @@ export class BloodPressureReadingsService {
     });
     return this.httpClient.put(`${this.apiUrl}/${id}`, bloodPressureReading, { headers });
   }
+
+  deleteReading(id: string): Observable<any> {
+    return this.httpClient.delete(`${this.apiUrl}/${id}`);
+  }
 }

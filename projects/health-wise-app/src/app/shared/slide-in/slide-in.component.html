@@ -1,5 +1,5 @@
 <div class="fixed inset-0 overflow-hidden z-20">
-  <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+  <div class="absolute inset-0 bg-gray-600 opacity-50"></div>
   <div id="slide-in-container" class="absolute inset-0 overflow-hidden">
     <section
       class="absolute inset-y-0 max-w-full right-0 flex transform transition ease-in-out duration-500 sm:duration-700"
@@ -25,7 +25,7 @@
                 </h2>
                 <div class="h-7 flex items-center">
                   <button aria-label="Close panel"
-                    class="text-indigo-200 hover:text-white transition ease-in-out duration-150">
+                    class="text-indigo-200 hover:text-white transition ease-in-out duration-150" (click)="close()">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -35,19 +35,29 @@
             </header>
             <ng-container contentHost></ng-container>
           </div>
-          <div class="flex-shrink-0 px-4 py-4 space-x-4 flex justify-end">
-            <span class="inline-flex rounded-md shadow-sm">
-              <button type="button" (click)="close()"
-                class="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out">
-                Cancel
-              </button>
-            </span>
-            <span class="inline-flex rounded-md shadow-sm">
-              <button type="submit" (click)="save()"
-                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-                Save
-              </button>
-            </span>
+          <div class="flex-shrink-0 px-4 py-4 space-x-4 flex justify-between">
+            <div>
+              <span class="inline-flex rounded-md">
+                <button type="button" (click)="delete()"
+                  class="py-2 px-4 rounded-md text-sm leading-5 font-medium text-red-700 hover:text-red-500 focus:outline-none focus:border-red-300 focus:shadow-outline-red active:bg-red-50 active:text-red-800 transition duration-150 ease-in-out">
+                  Remove
+                </button>
+              </span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="inline-flex rounded-md shadow-sm">
+                <button type="button" (click)="close()"
+                  class="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out">
+                  Cancel
+                </button>
+              </span>
+              <span class="inline-flex rounded-md shadow-sm">
+                <button type="submit" (click)="save()"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                  Save
+                </button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
