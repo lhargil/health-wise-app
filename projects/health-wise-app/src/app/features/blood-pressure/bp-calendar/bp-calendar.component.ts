@@ -37,27 +37,40 @@ export class BpCalendarComponent implements OnInit {
 
   private addReadingSubject = new BehaviorSubject<BloodPressureReading | undefined>(undefined);
   private clickedReadingSubject = new BehaviorSubject<string | number | undefined>(undefined);
+  private editReadingSubject = new BehaviorSubject<BloodPressureReading | undefined>(undefined);
   private readingToEdit: BloodPressureReading;
   clickedReading$ = this.clickedReadingSubject.asObservable();
   addReading$ = this.addReadingSubject.asObservable();
+  editReading$ = this.editReadingSubject.asObservable();
+
   readings$ = combineLatest(
     [
       this.addReading$,
       this.clickedReading$,
+      this.editReading$,
       this.bloodPressureService.getReadings()
     ]
   ).pipe(
-
-    tap(([_, clickedReadingId, readings]) => {
+    tap(([_, clickedReadingId, __, readings]) => {
       if (clickedReadingId) {
         const toEdit = readings.find(reading => reading.id == clickedReadingId);
         if (!toEdit) {
           return;
         }
-        this.readingToEdit = toEdit;
+        this.readingToEdit = { ...toEdit };
       }
     }),
-    map(([updatedReading, _, readings]) => {
+    tap(([_, __, editedReading, readings]) => {
+      if (!editedReading) {
+        return;
+      }
+      const indexOfEdited = readings.findIndex(reading => reading.id == editedReading.id);
+      if (indexOfEdited == -1) {
+        return;
+      }
+      readings.splice(indexOfEdited, 1, editedReading);
+    }),
+    map(([updatedReading, _, __, readings]) => {
       if (updatedReading) {
         readings.push(updatedReading);
       }
@@ -158,6 +171,9 @@ export class BpCalendarComponent implements OnInit {
         updatedBloodPressureReading.id = uuidv4();
         this.bloodPressureService.addReading(updatedBloodPressureReading)
           .subscribe(_ => this.addReadingSubject.next(updatedBloodPressureReading));
+      } else {
+        this.bloodPressureService.editReading(updatedBloodPressureReading.id, updatedBloodPressureReading)
+          .subscribe(_ => this.editReadingSubject.next(updatedBloodPressureReading));
       }
     };
   }

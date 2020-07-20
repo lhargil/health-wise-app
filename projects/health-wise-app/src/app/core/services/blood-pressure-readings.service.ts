@@ -21,4 +21,11 @@ export class BloodPressureReadingsService {
     });
     return this.httpClient.post(this.apiUrl, bloodPressureReading, { headers });
   }
+
+  editReading(id: string, bloodPressureReading: BloodPressureReading) {
+    const headers = new HttpHeaders({
+      'content-type': 'application/json'
+    });
+    return this.httpClient.put(`${this.apiUrl}/${id}`, bloodPressureReading, { headers });
+  }
 }
