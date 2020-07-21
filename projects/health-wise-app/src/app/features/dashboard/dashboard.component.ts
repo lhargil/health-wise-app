@@ -19,86 +19,25 @@ export class DashboardComponent implements OnInit {
   public chart1options: Partial<ChartOptions>;
   public chart2options: Partial<ChartOptions>;
   public chart3options: Partial<ChartOptions>;
-  public commonOptions: Partial<ChartOptions> = {
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: 'smooth',
-    },
-    toolbar: {
-      tools: {
-        selection: false,
-      },
-    },
-    markers: {
-      size: 6,
-      hover: {
-        size: 10,
-      },
-    },
-    tooltip: {
-      followCursor: false,
-      theme: 'dark',
-      x: {
-        show: false,
-      },
-      marker: {
-        show: false,
-      },
-      y: {
-        title: {
-          formatter: function () {
-            return '';
-          },
-        },
-      },
-    },
-    grid: {
-      clipMarkers: false,
-    },
-    xaxis: {
-      type: 'datetime',
-      labels: {
-        datetimeUTC: false,
-        format: 'dd-MMM',
-      },
-    },
-    yaxis: {
-      forceNiceScale: true,
-      tickAmount: 6,
-      decimalsInFloat: 0,
-    },
-    noData: {
-      text: 'Loading...',
-    },
-  };
 
-  public bloodPressureReadings: BloodPressureReading[] = [];
+  public bloodPressureReadingsx: BloodPressureReading[] = [];
 
   bloodPressureReadings$ = this.healthService.stateChanged.pipe(
     filter((state: any) => !!state),
     map((state: HealthStore) => state.bloodPressureReadings),
-    // tap(readings => this.bloodPressureReadings = readings),
-    // tap(_ => this.initCharts()),
+    tap((_) => this.initCharts())
   );
 
-  constructor(private healthService: HealthService) {
-  }
+  constructor(private healthService: HealthService) {}
 
   ngOnInit(): void {
-    this.healthService.getBloodPressureReadings()
+    this.healthService
+      .getBloodPressureReadings()
       .pipe(
-        tap(readings => this.bloodPressureReadings = readings),
-        tap(_ => this.initCharts())
+        // tap((readings) => (this.bloodPressureReadingsx = readings)),
+        tap((_) => this.initCharts())
       )
       .subscribe();
-    // this.bloodPressureReadings$
-    //   .pipe(
-    //     tap(readings => this.bloodPressureReadings = readings),
-    //     tap(_ => this.initCharts())
-    //   ).subscribe();
-
   }
 
   public initCharts(): void {
@@ -106,7 +45,7 @@ export class DashboardComponent implements OnInit {
       series: [
         {
           name: 'Systole',
-          data: this.generateSeries(this.bloodPressureReadings, (readings) => {
+          data: this.generateSeries(this.bloodPressureReadingsx, (readings) => {
             const series: any[] = [];
 
             readings.forEach((reading) => {
@@ -139,7 +78,7 @@ export class DashboardComponent implements OnInit {
       series: [
         {
           name: 'Diastole',
-          data: this.generateSeries(this.bloodPressureReadings, (readings) => {
+          data: this.generateSeries(this.bloodPressureReadingsx, (readings) => {
             const series: any[] = [];
 
             readings.forEach((reading) => {
@@ -173,7 +112,7 @@ export class DashboardComponent implements OnInit {
       series: [
         {
           name: 'Heart rate',
-          data: this.generateSeries(this.bloodPressureReadings, (readings) => {
+          data: this.generateSeries(this.bloodPressureReadingsx, (readings) => {
             const series: any[] = [];
 
             readings.forEach((reading) => {
@@ -222,5 +161,4 @@ export class DashboardComponent implements OnInit {
     });
     return series;
   }
-
 }
