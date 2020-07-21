@@ -1,4 +1,4 @@
-<ng-container *ngIf="readings$ | async as readings">
+<ng-container *ngIf="bloodPressureReadings$ | async as readings">
   <hwa-calendar-wrapper [events]="readings" [viewDate]="viewDate" [activeDayIsOpen]="activeDayIsOpen" [view]="view"
     (navigateCalendar)="onCalendarNagivated($event)" (dayClicked)="onDayClicked($event)"
     (eventClicked)="eventClicked($event)">
