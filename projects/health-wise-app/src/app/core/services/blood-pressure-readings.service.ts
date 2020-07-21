@@ -8,7 +8,7 @@ import { Observable, Subject } from 'rxjs';
   providedIn: CoreModule
 })
 export class BloodPressureReadingsService {
-  private apiUrl = '/api/readings';
+  private apiUrl = '/api/bp-readings';
   constructor(private httpClient: HttpClient) { }
 
   getReadings(): Observable<BloodPressureReading[]> {

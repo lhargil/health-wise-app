@@ -4,8 +4,9 @@ import {
   ChartOptions,
   ChartWrapperComponent,
 } from '../../shared/chart-wrapper/chart-wrapper.component';
-import { BloodPressureReadingsService } from '../../core/services/blood-pressure-readings.service';
-import { tap } from 'rxjs/operators';
+import { HealthService } from '../../core/services/health.service';
+import { tap, filter, map } from 'rxjs/operators';
+import { HealthStore } from '../../core/state';
 
 @Component({
   selector: 'hwa-dashboard',
@@ -75,17 +76,29 @@ export class DashboardComponent implements OnInit {
 
   public bloodPressureReadings: BloodPressureReading[] = [];
 
-  bloodPressureReadings$ = this.bloodPressureReadingsService.getReadings();
+  bloodPressureReadings$ = this.healthService.stateChanged.pipe(
+    filter((state: any) => !!state),
+    map((state: HealthStore) => state.bloodPressureReadings),
+    // tap(readings => this.bloodPressureReadings = readings),
+    // tap(_ => this.initCharts()),
+  );
 
-  constructor(private bloodPressureReadingsService: BloodPressureReadingsService) {
+  constructor(private healthService: HealthService) {
   }
 
   ngOnInit(): void {
-    this.bloodPressureReadings$
+    this.healthService.getBloodPressureReadings()
       .pipe(
         tap(readings => this.bloodPressureReadings = readings),
         tap(_ => this.initCharts())
-      ).subscribe();
+      )
+      .subscribe();
+    // this.bloodPressureReadings$
+    //   .pipe(
+    //     tap(readings => this.bloodPressureReadings = readings),
+    //     tap(_ => this.initCharts())
+    //   ).subscribe();
+
   }
 
   public initCharts(): void {

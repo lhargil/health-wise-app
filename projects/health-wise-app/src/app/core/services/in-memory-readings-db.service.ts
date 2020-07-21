@@ -27,6 +27,6 @@ export class InMemoryReadingsDbService implements InMemoryDbService {
         dateAdded: new Date('2020-07-05T00:00:00Z').toISOString(),
       },
     ] as BloodPressureReading[];
-    return { readings };
+    return { 'bp-readings': readings };
   }
 }
