@@ -20,6 +20,7 @@ import {
   ApexChart,
   ApexLegend,
   ChartComponent,
+  ApexNonAxisChartSeries,
 } from 'ng-apexcharts';
 import { BloodPressureReading } from '../../core/models';
 
@@ -50,28 +51,13 @@ export type ChartOptions = {
 export class ChartWrapperComponent implements OnInit, AfterViewInit {
   @ViewChild('chartInstance', { static: true }) chartInstance: ChartComponent;
 
-  private _bloodPressureReadings: BloodPressureReading[];
-  @Input()
-  set bloodPressureReadings(value: BloodPressureReading[]) {
-    this._bloodPressureReadings = value;
-  }
-  @Input()
-  public chartOptions: Partial<ChartOptions> = {
+  private _defaultChartOptions = {
     series: [
       {
-        name: 'Systole',
+        name: '',
         data: [],
       },
     ],
-    title: {
-      text: 'Systole',
-    },
-    chart: {
-      id: 'systole',
-      group: 'blood-pressure',
-      type: 'area',
-      height: 160,
-    },
     colors: ['#008FFB'],
     yaxis: {
       labels: {
@@ -79,6 +65,27 @@ export class ChartWrapperComponent implements OnInit, AfterViewInit {
       },
     },
   };
+  private _series: ApexAxisChartSeries | ApexNonAxisChartSeries;
+  @Input()
+  set series(value: ApexAxisChartSeries | ApexNonAxisChartSeries) {
+    this._series = value;
+  }
+
+  get series() {
+    return this._series;
+  }
+
+  private _chartOptions: Partial<ChartOptions>;
+  @Input()
+  set chartOptions(value: Partial<ChartOptions>) {
+    this._chartOptions = {
+      ...this._defaultChartOptions,
+      ...value
+    };
+  }
+  get chartOptions() {
+    return this._chartOptions;
+  }
   @Input()
   public commonOptions: Partial<ChartOptions> = {
     dataLabels: {
@@ -134,24 +141,13 @@ export class ChartWrapperComponent implements OnInit, AfterViewInit {
       text: 'Loading...',
     },
   };
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.chartInstance.updateSeries([
-        {
-          data: this.generateSeries(this._bloodPressureReadings, (readings) => {
-            const series: any[] = [];
-            readings.forEach((reading) => {
-              const x = new Date(reading.dateAdded).getTime();
-              series.push([x, reading.systole]);
-            });
-            return series;
-          }),
-        },
-      ]);
+      this.chartInstance.updateSeries(this.series);
     });
   }
 

@@ -3,33 +3,24 @@
     Blood pressure readings
   </h2>
 </div>
-<div
-  class="flex flex-col space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4"
-  *ngIf="bloodPressureReadings$ | async as bloodPressureReadings"
->
+<div class="flex flex-col space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4"
+  *ngIf="bloodPressureReadingsSeries$ | async as bloodPressureReadingsSeries">
   <div class="flex-1 bg-white overflow-hidden shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <hwa-chart-wrapper
-        #systoleChart
-        [bloodPressureReadings]="bloodPressureReadings"
-      >
+      <hwa-chart-wrapper #systoleChart [chartOptions]="chart1options" [series]="bloodPressureReadingsSeries.systole">
       </hwa-chart-wrapper>
     </div>
   </div>
-  <!-- <div class="flex-1 bg-white overflow-hidden shadow rounded-lg">
+  <div class="flex-1 bg-white overflow-hidden shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <hwa-chart-wrapper
-        [chartOptions]="chart2options"
-        [commonOptions]="commonOptions"
-      ></hwa-chart-wrapper>
+      <hwa-chart-wrapper #diastoleChart [chartOptions]="chart2options" [series]="bloodPressureReadingsSeries.diastole">
+      </hwa-chart-wrapper>
     </div>
   </div>
   <div class="flex-1 bg-white overflow-hidden shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <hwa-chart-wrapper
-        [chartOptions]="chart3options"
-        [commonOptions]="commonOptions"
-      ></hwa-chart-wrapper>
+      <hwa-chart-wrapper #heartRate [chartOptions]="chart3options" [series]="bloodPressureReadingsSeries.heartRate">
+      </hwa-chart-wrapper>
     </div>
-  </div> -->
+  </div>
 </div>
