@@ -40,27 +40,27 @@ export class SlideInHostComponent implements OnInit {
       refs.component.closeClicked.subscribe((_: any) => {
         this.dismissModal(refs);
       });
-      refs.component.saveClicked.subscribe((eventData: string) => {
-        modalState.handleSave(eventData);
-        this.dismissModal(refs);
+
+      refs.component.saveClicked.subscribe((saveEvent: { data: any, afterSave: () => void }) => {
+        modalState.handleSave(saveEvent.data, saveEvent.afterSave);
       });
-      if (modalState.handleDelete) {
-        refs.component.deleteClicked.subscribe((eventData: any) => {
-          if (modalState.handleDelete) {
-            modalState.handleDelete(eventData);
-          }
-          // this.dialogService.confirm({
-          //   heading: modalState.dialog.heading,
-          //   message: modalState.dialog.message,
-          //   callback: affirmativeAnswer => {
-          //     if (affirmativeAnswer) {
-          //       modalState.handleDelete(eventData);
-          //       this.dismissModal(refs);
-          //     }
-          //   }
-          // });
-        });
-      }
+
+      refs.component.deleteClicked.subscribe((deleteEvent: { data: any, afterDelete: () => void }) => {
+        if (modalState.handleDelete) {
+          modalState.handleDelete(deleteEvent.data, deleteEvent.afterDelete);
+        }
+        // this.dialogService.confirm({
+        //   heading: modalState.dialog.heading,
+        //   message: modalState.dialog.message,
+        //   callback: affirmativeAnswer => {
+        //     if (affirmativeAnswer) {
+        //       modalState.handleDelete(eventData);
+        //       this.dismissModal(refs);
+        //     }
+        //   }
+        // });
+      });
+
       refs.component.content = {
         component: modalState.component,
         formData: modalState.formData,

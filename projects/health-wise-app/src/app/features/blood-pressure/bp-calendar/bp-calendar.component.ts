@@ -54,7 +54,7 @@ export class BpCalendarComponent implements OnInit {
       }))
     );
 
-  bloodPressureReadings$ = this.healthService.stateChanged.pipe(
+  public bloodPressureReadings$ = this.healthService.stateChanged.pipe(
     filter((state: any) => !!state),
     map((state: HealthStore) => {
       return state.bloodPressureReadings.map((reading: BloodPressureReading) => {
@@ -71,8 +71,13 @@ export class BpCalendarComponent implements OnInit {
     })
   );
 
-  constructor(private slideInService: SlideInService, private bloodPressureService: BloodPressureReadingsService, private healthService: HealthService) { }
+  constructor(private slideInService: SlideInService,
+    private healthService: HealthService) { }
+
   ngOnInit() {
+    this.healthService
+      .getBloodPressureReadings()
+      .subscribe();
     this.editReading$.subscribe();
   }
 
@@ -103,7 +108,7 @@ export class BpCalendarComponent implements OnInit {
           formData: this.getDefaultReading(date),
           modalMode: ModalModes.Create,
           component: BloodPressureFormShellComponent,
-          handleSave: this.handleSave(),
+          handleSave: this.handleSave()
         });
       }
     }
@@ -119,26 +124,48 @@ export class BpCalendarComponent implements OnInit {
     } as BloodPressureReading;
   }
 
-  handleDelete(): (eventData: any) => void {
-    return (bloodPressureReading: BloodPressureReading) => {
+  handleDelete(): (eventData: any, afterDelete?: () => void) => void {
+    return (bloodPressureReading: BloodPressureReading, afterDelete?: () => void) => {
       if (!bloodPressureReading) {
         return;
       }
-      this.bloodPressureService.deleteReading(bloodPressureReading.id)
-        .subscribe(_ => {
-          this.activeDayIsOpen = false;
-        });
+      this.healthService.deleteBloodPressureReading(bloodPressureReading)
+        .pipe(
+          tap(_ => {
+            this.activeDayIsOpen = false;
+            if (afterDelete) {
+              afterDelete();
+            }
+          })
+        )
+        .subscribe();
     };
   }
 
-  handleSave(): (eventData: any) => void {
-    return (updatedBloodPressureReading: BloodPressureReading) => {
+  handleSave(): (eventData: any, afterSave?: () => void) => void {
+    return (updatedBloodPressureReading: BloodPressureReading, afterSave?: () => void) => {
       if (!updatedBloodPressureReading.id) {
         updatedBloodPressureReading.id = uuidv4();
         this.healthService.addBloodPressureReading(updatedBloodPressureReading)
+          .pipe(
+            tap(_ => {
+              this.activeDayIsOpen = false;
+              if (afterSave) {
+                afterSave();
+              }
+            })
+          )
           .subscribe();
       } else {
         this.healthService.updateBloodPressureReading(updatedBloodPressureReading)
+          .pipe(
+            tap(_ => {
+              this.activeDayIsOpen = false;
+              if (afterSave) {
+                afterSave();
+              }
+            })
+          )
           .subscribe();
       }
     };
