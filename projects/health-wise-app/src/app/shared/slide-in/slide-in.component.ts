@@ -25,8 +25,8 @@ import { ContentHostDirective } from '../directives/content-host/content-host.di
 export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(ContentHostDirective, { static: true })
   modalContentHost: ContentHostDirective;
-  @Output() saveClicked: EventEmitter<any>;
-  @Output() deleteClicked: EventEmitter<any>;
+  @Output() saveClicked: EventEmitter<{ data: any, afterSave: () => void }>;
+  @Output() deleteClicked: EventEmitter<{ data: any, afterDelete: () => void }>;
   @Output() closeClicked: EventEmitter<any>;
   @Input() content: {
     component: Type<any>;
@@ -34,9 +34,6 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
     heading: string;
     showDelete: boolean;
   };
-  destroyed$ = new Subject();
-
-  formIsInvalid$: Observable<any>;
 
   private loadedComponent: any;
   private clickedOutside$ = fromEvent(window, 'click').pipe(
@@ -44,10 +41,13 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
       return ev.target.id.includes('slide-in-container');
     })
   );
+  destroyed$ = new Subject();
+  formIsInvalid$: Observable<any>;
+  open = false;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {
-    this.saveClicked = new EventEmitter<any>();
-    this.deleteClicked = new EventEmitter<any>();
+    this.saveClicked = new EventEmitter<{ data: any, afterSave: () => void }>();
+    this.deleteClicked = new EventEmitter<{ data: any, afterDelete: () => void }>();
     this.closeClicked = new EventEmitter<any>();
   }
 
@@ -69,6 +69,9 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
       map((valid: boolean) => !valid),
       takeUntil(this.destroyed$)
     );
+    setTimeout(() => {
+      this.openModal();
+    });
   }
 
   private loadComponent() {
@@ -87,16 +90,24 @@ export class SlideInComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   save() {
-    this.loadedComponent.instance.formSubmit((formValues: any) =>
-      this.saveClicked.emit(formValues)
-    );
+    this.loadedComponent.instance
+      .formSubmit((formValues: any) =>
+        this.saveClicked.emit({ data: formValues, afterSave: () => this.close() })
+      );
   }
 
   delete() {
-    this.deleteClicked.emit({});
+    this.deleteClicked.emit({ data: this.content.formData, afterDelete: () => this.close() });
+  }
+
+  openModal() {
+    this.open = !this.open;
   }
 
   close() {
-    this.closeClicked.emit({});
+    this.openModal();
+    setTimeout(() => {
+      this.closeClicked.emit({});
+    }, 500);
   }
 }

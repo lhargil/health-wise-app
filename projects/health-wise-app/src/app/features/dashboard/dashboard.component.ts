@@ -4,8 +4,9 @@ import {
   ChartOptions,
   ChartWrapperComponent,
 } from '../../shared/chart-wrapper/chart-wrapper.component';
-import { BloodPressureReadingsService } from '../../core/services/blood-pressure-readings.service';
-import { tap } from 'rxjs/operators';
+import { HealthService } from '../../core/services/health.service';
+import { tap, filter, map } from 'rxjs/operators';
+import { HealthStore } from '../../core/state';
 
 @Component({
   selector: 'hwa-dashboard',
@@ -15,85 +16,50 @@ import { tap } from 'rxjs/operators';
 export class DashboardComponent implements OnInit {
   @ViewChild('systoleChart', { static: true })
   systoleChart: ChartWrapperComponent;
-  public chart1options: Partial<ChartOptions>;
-  public chart2options: Partial<ChartOptions>;
-  public chart3options: Partial<ChartOptions>;
-  public commonOptions: Partial<ChartOptions> = {
-    dataLabels: {
-      enabled: false,
+  public chart1options: Partial<ChartOptions> = {
+    title: {
+      text: 'Systole',
     },
-    stroke: {
-      curve: 'smooth',
+    chart: {
+      id: 'systole',
+      group: 'blood-pressure',
+      type: 'area',
+      height: 160,
     },
-    toolbar: {
-      tools: {
-        selection: false,
-      },
+    colors: ['#008FFB'],
+  };
+  public chart2options: Partial<ChartOptions> = {
+    title: {
+      text: 'Diastole',
     },
-    markers: {
-      size: 6,
-      hover: {
-        size: 10,
-      },
+    chart: {
+      id: 'diastole',
+      group: 'blood-pressure',
+      type: 'area',
+      height: 160,
     },
-    tooltip: {
-      followCursor: false,
-      theme: 'dark',
-      x: {
-        show: false,
-      },
-      marker: {
-        show: false,
-      },
-      y: {
-        title: {
-          formatter: function () {
-            return '';
-          },
-        },
-      },
+    colors: ['#546E7A'],
+  };
+  public chart3options: Partial<ChartOptions> = {
+    title: {
+      text: 'Heart rate',
     },
-    grid: {
-      clipMarkers: false,
+    chart: {
+      id: 'heart-rate',
+      group: 'blood-pressure',
+      type: 'area',
+      height: 160,
     },
-    xaxis: {
-      type: 'datetime',
-      labels: {
-        datetimeUTC: false,
-        format: 'dd-MMM',
-      },
-    },
-    yaxis: {
-      forceNiceScale: true,
-      tickAmount: 6,
-      decimalsInFloat: 0,
-    },
-    noData: {
-      text: 'Loading...',
-    },
+    colors: ['#00E396'],
   };
 
-  public bloodPressureReadings: BloodPressureReading[] = [];
-
-  bloodPressureReadings$ = this.bloodPressureReadingsService.getReadings();
-
-  constructor(private bloodPressureReadingsService: BloodPressureReadingsService) {
-  }
-
-  ngOnInit(): void {
-    this.bloodPressureReadings$
-      .pipe(
-        tap(readings => this.bloodPressureReadings = readings),
-        tap(_ => this.initCharts())
-      ).subscribe();
-  }
-
-  public initCharts(): void {
-    this.chart1options = {
-      series: [
-        {
+  bloodPressureReadingsSeries$ = this.healthService.stateChanged.pipe(
+    filter((state: any) => !!state),
+    map((state: HealthStore) => {
+      return {
+        systole: [{
           name: 'Systole',
-          data: this.generateSeries(this.bloodPressureReadings, (readings) => {
+          data: this.generateSeries(state.bloodPressureReadings, (readings) => {
             const series: any[] = [];
 
             readings.forEach((reading) => {
@@ -103,111 +69,53 @@ export class DashboardComponent implements OnInit {
 
             return series;
           }),
-        },
-      ],
-      title: {
-        text: 'Systole',
-      },
-      chart: {
-        id: 'systole',
-        group: 'blood-pressure',
-        type: 'area',
-        height: 160,
-      },
-      colors: ['#008FFB'],
-      yaxis: {
-        labels: {
-          minWidth: 40,
-        },
-      },
-    };
+        }],
+        diastole: [
+          {
+            name: 'Diastole',
+            data: this.generateSeries(state.bloodPressureReadings, (readings) => {
+              const series: any[] = [];
 
-    this.chart2options = {
-      series: [
-        {
-          name: 'Diastole',
-          data: this.generateSeries(this.bloodPressureReadings, (readings) => {
-            const series: any[] = [];
+              readings.forEach((reading) => {
+                const x = new Date(reading.dateAdded).getTime();
+                series.push([x, reading.diastole]);
+              });
 
-            readings.forEach((reading) => {
-              const x = new Date(reading.dateAdded).getTime();
-              series.push([x, reading.diastole]);
-            });
+              return series;
+            }),
+          },
+        ],
+        heartRate: [
+          {
+            name: 'Heart rate',
+            data: this.generateSeries(state.bloodPressureReadings, (readings) => {
+              const series: any[] = [];
 
-            return series;
-          }),
-        },
-      ],
-      title: {
-        text: 'Diastole',
-      },
-      chart: {
-        id: 'diastole',
-        group: 'blood-pressure',
-        type: 'area',
-        height: 160,
-      },
-      colors: ['#546E7A'],
-      yaxis: {
-        tickAmount: 2,
-        labels: {
-          minWidth: 40,
-        },
-      },
-    };
+              readings.forEach((reading) => {
+                const x = new Date(reading.dateAdded).getTime();
+                series.push([x, reading.heartRate]);
+              });
 
-    this.chart3options = {
-      series: [
-        {
-          name: 'Heart rate',
-          data: this.generateSeries(this.bloodPressureReadings, (readings) => {
-            const series: any[] = [];
+              return series;
+            }),
+          },
+        ]
+      }
+    }),
+  );
 
-            readings.forEach((reading) => {
-              const x = new Date(reading.dateAdded).getTime();
-              series.push([x, reading.heartRate]);
-            });
+  constructor(private healthService: HealthService) { }
 
-            return series;
-          }),
-        },
-      ],
-      title: {
-        text: 'Heart rate',
-      },
-      chart: {
-        id: 'heart-rate',
-        group: 'blood-pressure',
-        type: 'area',
-        height: 160,
-      },
-      colors: ['#00E396'],
-      yaxis: {
-        tickAmount: 2,
-        labels: {
-          minWidth: 40,
-        },
-      },
-    };
+  ngOnInit(): void {
+    this.healthService
+      .getBloodPressureReadings()
+      .subscribe();
   }
 
-  public generateSeries(
+  private generateSeries(
     readings: BloodPressureReading[],
     extractFunc: (list: BloodPressureReading[]) => any[]
   ) {
     return extractFunc(readings);
   }
-
-  public generateDayWiseTimeSeries(startDate: Date, readings: number[]): any[] {
-    const series: any[] = [];
-    let start = startDate.getTime();
-    readings.forEach((reading) => {
-      const x = start;
-      series.push([x, reading]);
-
-      start += 86400000;
-    });
-    return series;
-  }
-
 }

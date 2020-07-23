@@ -14,6 +14,6 @@ import { InMemoryReadingsDbService } from './services/in-memory-readings-db.serv
   declarations: [],
   imports: [BrowserModule, RouterModule, HttpClientModule, !environment.production ?
     HttpClientInMemoryWebApiModule.forRoot(InMemoryReadingsDbService, { delay: 100 }) : []],
-  exports: [RouterModule],
+  exports: [RouterModule, ReactiveFormsModule, BrowserAnimationsModule],
 })
 export class CoreModule { }

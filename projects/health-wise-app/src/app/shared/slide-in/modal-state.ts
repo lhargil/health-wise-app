@@ -10,8 +10,8 @@ export interface ModalState {
   formData: any;
   modalMode: ModalModes;
   component: Type<any>;
-  handleSave: (eventData: string) => void;
-  handleDelete?: (eventData: string) => void;
+  handleSave: (eventData: any, afterSave?: () => void) => void;
+  handleDelete?: (eventData: any, afterDelete?: () => void) => void;
 }
 
 export interface IFormModal {
