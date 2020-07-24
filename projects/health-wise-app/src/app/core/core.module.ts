@@ -5,10 +5,15 @@ import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { environment } from '../../environments/environment';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryReadingsDbService } from './services/in-memory-readings-db.service'
 
 @NgModule({
   declarations: [],
-  imports: [BrowserModule, RouterModule],
-  exports: [BrowserModule, RouterModule, BrowserAnimationsModule],
+  imports: [BrowserModule, RouterModule, HttpClientModule, !environment.production ?
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryReadingsDbService, { delay: 100 }) : []],
+  exports: [RouterModule, ReactiveFormsModule, BrowserAnimationsModule],
 })
-export class CoreModule {}
+export class CoreModule { }

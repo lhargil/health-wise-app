@@ -6,11 +6,12 @@ import { SidebarLayoutModule } from './core/layout/sidebar-layout/sidebar-layout
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { SlideInModule } from './shared/slide-in/slide-in.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [CoreModule, SharedModule, AppRoutingModule, SidebarLayoutModule],
+  imports: [CoreModule, AppRoutingModule, SidebarLayoutModule, SlideInModule],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

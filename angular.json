@@ -41,7 +41,8 @@
               "calendar-utils/date-adapters/date-fns",
               "@mattlewis92/dom-autoscroller",
               "dom-set",
-              "dom-plane"
+              "dom-plane",
+              "@codewithdan/observable-store"
             ]
           },
           "configurations": {

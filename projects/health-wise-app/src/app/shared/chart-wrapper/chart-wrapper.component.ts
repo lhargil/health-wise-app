@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
   Input,
+  AfterViewInit,
 } from '@angular/core';
 import {
   ApexAxisChartSeries,
@@ -19,7 +20,9 @@ import {
   ApexChart,
   ApexLegend,
   ChartComponent,
+  ApexNonAxisChartSeries,
 } from 'ng-apexcharts';
+import { BloodPressureReading } from '../../core/models';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -45,13 +48,113 @@ export type ChartOptions = {
   styleUrls: ['./chart-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChartWrapperComponent implements OnInit {
+export class ChartWrapperComponent implements OnInit, AfterViewInit {
   @ViewChild('chartInstance', { static: true }) chartInstance: ChartComponent;
-  @Input()
-  public chartOptions: Partial<ChartOptions>;
-  @Input()
-  public commonOptions: Partial<ChartOptions>;
-  constructor() {}
 
-  ngOnInit(): void {}
+  private _defaultChartOptions = {
+    series: [
+      {
+        name: '',
+        data: [],
+      },
+    ],
+    colors: ['#008FFB'],
+    yaxis: {
+      labels: {
+        minWidth: 40,
+      },
+    },
+  };
+  private _series: ApexAxisChartSeries | ApexNonAxisChartSeries;
+  @Input()
+  set series(value: ApexAxisChartSeries | ApexNonAxisChartSeries) {
+    this._series = value;
+  }
+
+  get series() {
+    return this._series;
+  }
+
+  private _chartOptions: Partial<ChartOptions>;
+  @Input()
+  set chartOptions(value: Partial<ChartOptions>) {
+    this._chartOptions = {
+      ...this._defaultChartOptions,
+      ...value
+    };
+  }
+  get chartOptions() {
+    return this._chartOptions;
+  }
+  @Input()
+  public commonOptions: Partial<ChartOptions> = {
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    toolbar: {
+      tools: {
+        selection: false,
+      },
+    },
+    markers: {
+      size: 6,
+      hover: {
+        size: 10,
+      },
+    },
+    tooltip: {
+      followCursor: false,
+      theme: 'dark',
+      x: {
+        show: false,
+      },
+      marker: {
+        show: false,
+      },
+      y: {
+        title: {
+          formatter: function () {
+            return '';
+          },
+        },
+      },
+    },
+    grid: {
+      clipMarkers: false,
+    },
+    xaxis: {
+      type: 'datetime',
+      labels: {
+        datetimeUTC: false,
+        format: 'dd-MMM',
+      },
+    },
+    yaxis: {
+      forceNiceScale: true,
+      tickAmount: 6,
+      decimalsInFloat: 0,
+    },
+    noData: {
+      text: 'Loading...',
+    },
+  };
+  constructor() { }
+
+  ngOnInit(): void { }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.chartInstance.updateSeries(this.series);
+    });
+  }
+
+  public generateSeries(
+    readings: BloodPressureReading[],
+    extractFunc: (list: BloodPressureReading[]) => any[]
+  ) {
+    return extractFunc(readings);
+  }
 }
