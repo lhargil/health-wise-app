@@ -2,10 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthWiseBackend.API.Core.Concrete;
+using HealthWiseBackend.API.Core.Interfaces;
+using HealthWiseBackend.API.Data;
+using HealthWiseBackend.API.Extensions;
+using HealthWiseBackend.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,7 +32,21 @@ namespace HealthWiseBackend.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+          services.AddDbContext<HealthWiseDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("HealthWiseDb")));
+
+          services.AddCors(options =>
+          {
+            options.AddPolicy("AllowAll", builder =>
+            {
+              builder
+                  .AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .WithExposedHeaders(new[] { "Location" });
+            });
+          });
+
+          services.AddControllers();
 
           // Register the Swagger services
           services.AddSwaggerDocument(config =>
@@ -49,6 +70,10 @@ namespace HealthWiseBackend.API
               };
             };
           });
+
+          services.AddTransient<IDateTimeManager, DefaultDateTimeManager>();
+
+          services.AddScoped<IContextData, RequestContextData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,11 +84,20 @@ namespace HealthWiseBackend.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+              ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseRequestContextDataMiddleware();
+
+            app.UseCors("AllowAll");
 
             // Register the Swagger generator and the Swagger UI middlewares
             app.UseOpenApi();

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthWiseBackend.API.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,11 +14,17 @@ namespace HealthWiseBackend.API.Controllers
   [ApiController]
   public class BloodPressureReadingsController : ControllerBase
   {
+    private readonly HealthWiseDbContext _healthWiseDbContext;
+
+    public BloodPressureReadingsController(HealthWiseDbContext healthWiseDbContext)
+    {
+      _healthWiseDbContext = healthWiseDbContext;
+    }
     // GET: api/<BloodPressureReadingsController>
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<ActionResult> Get()
     {
-      return new string[] { "value1", "value2" };
+      return Ok(await _healthWiseDbContext.BloodPressureReadings.ToListAsync());
     }
 
     // GET api/<BloodPressureReadingsController>/5

@@ -2,7 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\projects",
-    "\\projects\\health-wise-api"
+    "\\projects\\health-wise-api",
+    "\\projects\\health-wise-api\\src",
+    "\\projects\\health-wise-api\\src\\HealthWiseBackend.API"
   ],
+  "SelectedNode": "\\.gitignore",
   "PreviewInSolutionExplorer": false
 }
