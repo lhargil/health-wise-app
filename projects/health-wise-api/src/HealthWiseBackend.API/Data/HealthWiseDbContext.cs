@@ -61,7 +61,7 @@ namespace HealthWiseBackend.API.Data
         }
 
         entry.Property("DateUpdated").CurrentValue = today;
-        entry.Property("UpdatedBy").CurrentValue = currentUser?.Fullname;
+        entry.Property("UpdatedBy").CurrentValue = currentUser?.Id.ToString();
         entry.Property("Status").CurrentValue = Statuses.Updated;
 
         if (entry.State == EntityState.Added)

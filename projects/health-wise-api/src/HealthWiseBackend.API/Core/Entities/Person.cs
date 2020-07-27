@@ -28,5 +28,10 @@ namespace HealthWiseBackend.API.Entities
     {
       BloodPressureReadings.Add(bloodPressureReading);
     }
+
+    public void RemoveBloodPressureReading(BloodPressureReading bloodPressureReading)
+    {
+      BloodPressureReadings.Remove(bloodPressureReading);
+    }
   }
 }

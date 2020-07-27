@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Core.Concrete;
 using HealthWiseBackend.API.Core.Interfaces;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +48,17 @@ namespace HealthWiseBackend.API
             });
           });
 
-          services.AddControllers();
+          services.AddControllers(options => {
+
+            // requires using Microsoft.AspNetCore.Mvc.Formatters;
+            options.OutputFormatters.RemoveType<StringOutputFormatter>();
+            options.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+          })
+          .AddJsonOptions(options =>
+          {
+            // Use the default property (Pascal) casing.
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+          });
 
           // Register the Swagger services
           services.AddSwaggerDocument(config =>

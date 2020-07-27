@@ -23,12 +23,13 @@ namespace HealthWiseBackend.API
             try
             {
               var services = scope.ServiceProvider;
-              var healthWiseDbContext = scope.ServiceProvider.GetRequiredService<HealthWiseDbContext>();
+              var healthWiseDbContext = services.GetRequiredService<HealthWiseDbContext>();
+              var contextData = services.GetRequiredService<IContextData>();
 
               healthWiseDbContext.Database.EnsureDeleted();
               healthWiseDbContext.Database.EnsureCreated();
 
-              await DataSeeder.Seed(healthWiseDbContext);
+              await DataSeeder.Seed(healthWiseDbContext, contextData);
           } 
             catch (Exception exception)
             {

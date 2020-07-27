@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Data;
+using HealthWiseBackend.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HealthWiseBackend.API.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/people/{personId}/[controller]")]
   [ApiController]
   public class BloodPressureReadingsController : ControllerBase
   {
@@ -22,16 +23,42 @@ namespace HealthWiseBackend.API.Controllers
     }
     // GET: api/<BloodPressureReadingsController>
     [HttpGet]
-    public async Task<ActionResult> Get()
+    public async Task<ActionResult> Get(Guid personId)
     {
-      return Ok(await _healthWiseDbContext.BloodPressureReadings.ToListAsync());
+      var bloodPressureReadings = await _healthWiseDbContext.BloodPressureReadings
+        .Where(reading => reading.PersonId == personId)
+        .Select(reading => new BloodPressureReadingDto
+        {
+          Id = reading.Id,
+          Systole = reading.Systole,
+          Diastole = reading.Diastole,
+          HeartRate = reading.HeartRate
+        })
+        .ToListAsync();
+
+      return Ok(bloodPressureReadings);
     }
 
     // GET api/<BloodPressureReadingsController>/5
     [HttpGet("{id}")]
-    public string Get(int id)
+    public async Task<ActionResult<BloodPressureReadingDto>> Get(Guid personId, Guid id)
     {
-      return "value";
+      var bloodPressureReading = await _healthWiseDbContext.BloodPressureReadings
+        .FirstOrDefaultAsync(reading => reading.PersonId == personId && reading.Id == id);
+
+      if (bloodPressureReading == null)
+      {
+        return NotFound("The blood pressure reading does not exist");
+      }
+
+      var bloodPressureReadingDto = new BloodPressureReadingDto {
+        Id = bloodPressureReading.Id,
+        Systole = bloodPressureReading.Systole,
+        Diastole = bloodPressureReading.Diastole,
+        HeartRate = bloodPressureReading.HeartRate
+      };
+
+      return Ok(bloodPressureReadingDto);
     }
 
     // POST api/<BloodPressureReadingsController>

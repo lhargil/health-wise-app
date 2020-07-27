@@ -1,4 +1,5 @@
 using HealthWiseBackend.API.Core.Interfaces;
+using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -18,7 +19,7 @@ namespace HealthWiseBackend.API.Middlewares
       _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, IContextData svc)
+    public async Task Invoke(HttpContext httpContext, IContextData svc, HealthWiseDbContext healthWiseDbContext)
     {
       var email = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
       svc.CurrentUser = new Person("lhar", "gil");

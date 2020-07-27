@@ -20,10 +20,6 @@ namespace HealthWiseBackend.API.Data.Configurations
       builder.Property<Statuses>("Status")
           .HasConversion(new EnumToStringConverter<Statuses>());
 
-      builder.Property<byte[]>("Version")
-          .ValueGeneratedOnAddOrUpdate()
-          .IsRowVersion();
-
       builder.HasQueryFilter(item => EF.Property<Statuses>(item, "Status") != Statuses.Archived);
     }
   }
