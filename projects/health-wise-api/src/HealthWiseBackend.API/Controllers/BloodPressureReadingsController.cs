@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Dtos;
+using HealthWiseBackend.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,20 +64,52 @@ namespace HealthWiseBackend.API.Controllers
 
     // POST api/<BloodPressureReadingsController>
     [HttpPost]
-    public void Post([FromBody] string value)
+    public async Task<ActionResult> Post(Guid personId, [FromBody] BloodPressureReadingInput bloodPressureReadingInput)
     {
-    }
+      var bloodPressureReadingToCreate = new BloodPressureReading(bloodPressureReadingInput.Systole, bloodPressureReadingInput.Diastole, bloodPressureReadingInput.HeartRate);
 
-    // PUT api/<BloodPressureReadingsController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
+      var person = await _healthWiseDbContext.People.FindAsync(personId);
+
+      if (person == null)
+      {
+        return NotFound("The person does not exist");
+      }
+
+      person.AddBloodPressureReading(bloodPressureReadingToCreate);
+
+      await _healthWiseDbContext.SaveChangesAsync();
+
+      return CreatedAtAction(nameof(this.Get), new { personId, id = bloodPressureReadingToCreate.Id }, new BloodPressureReadingDto {
+        Id = bloodPressureReadingToCreate.Id,
+        Systole = bloodPressureReadingToCreate.Systole,
+        Diastole = bloodPressureReadingToCreate.Diastole,
+        HeartRate = bloodPressureReadingToCreate.HeartRate
+      });
     }
 
     // DELETE api/<BloodPressureReadingsController>/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public async Task<ActionResult> Delete(Guid personId, Guid id)
     {
+      var person = await _healthWiseDbContext.People.FindAsync(personId);
+
+      if (person == null)
+      {
+        return NotFound("The person does not exist");
+      }
+
+      var bloodPressureReadingToRemove = await _healthWiseDbContext.BloodPressureReadings.FindAsync(id);
+
+      if (bloodPressureReadingToRemove == null)
+      {
+        return NotFound("The blood pressure reading to remove does not exist");
+      }
+
+      person.RemoveBloodPressureReading(bloodPressureReadingToRemove);
+
+      await _healthWiseDbContext.SaveChangesAsync();
+
+      return NoContent();
     }
   }
 }
