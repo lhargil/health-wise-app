@@ -21,6 +21,7 @@ export class BloodPressureFormComponent implements OnInit {
       systole: [bloodPressureReading.systole, [Validators.required]],
       diastole: [bloodPressureReading.diastole, [Validators.required]],
       heartRate: [bloodPressureReading.heartRate, [Validators.required]],
+      personId: [bloodPressureReading.personId],
       dateAdded: [bloodPressureReading.dateAdded],
     };
 

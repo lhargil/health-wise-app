@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,8 +27,7 @@ namespace HealthWiseBackend.API
               var healthWiseDbContext = services.GetRequiredService<HealthWiseDbContext>();
               var contextData = services.GetRequiredService<IContextData>();
 
-              healthWiseDbContext.Database.EnsureDeleted();
-              healthWiseDbContext.Database.EnsureCreated();
+              await healthWiseDbContext.Database.MigrateAsync();
 
               await DataSeeder.Seed(healthWiseDbContext, contextData);
           } 

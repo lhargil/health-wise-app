@@ -7,6 +7,7 @@ using HealthWiseBackend.API.Dtos;
 using HealthWiseBackend.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,10 +34,12 @@ namespace HealthWiseBackend.API.Controllers
           Id = reading.Id,
           Systole = reading.Systole,
           Diastole = reading.Diastole,
-          HeartRate = reading.HeartRate
+          HeartRate = reading.HeartRate,
+          DateAdded = EF.Property<DateTime>(reading, "DateUpdated")
         })
         .ToListAsync();
 
+            // 
       return Ok(bloodPressureReadings);
     }
 
@@ -45,7 +48,15 @@ namespace HealthWiseBackend.API.Controllers
     public async Task<ActionResult<BloodPressureReadingDto>> Get(Guid personId, Guid id)
     {
       var bloodPressureReading = await _healthWiseDbContext.BloodPressureReadings
-        .FirstOrDefaultAsync(reading => reading.PersonId == personId && reading.Id == id);
+        .Where(reading => reading.PersonId == personId && reading.Id == id)
+        .Select(reading => new BloodPressureReadingDto
+        {
+          Id = reading.Id,
+          Systole = reading.Systole,
+          Diastole = reading.Diastole,
+          HeartRate = reading.HeartRate,
+          DateAdded = EF.Property<DateTime>(reading, "DateUpdated")
+        }).FirstOrDefaultAsync();
 
       if (bloodPressureReading == null)
       {

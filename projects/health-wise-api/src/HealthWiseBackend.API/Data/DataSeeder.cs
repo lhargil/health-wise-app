@@ -11,25 +11,28 @@ namespace HealthWiseBackend.API.Data
   {
     public static async Task Seed(HealthWiseDbContext healthWiseDbContext, IContextData contextData)
     {
-      var person1 = new Person("lhar", "gil");
-      var person2 = new Person("jon", "snow");
+      if (!healthWiseDbContext.People.Any())
+      {
+        var person1 = new Person("lhar", "gil");
+        var person2 = new Person("jon", "snow");
 
-      healthWiseDbContext.People.Add(person1);
-      healthWiseDbContext.People.Add(person2);
+        healthWiseDbContext.People.Add(person1);
+        healthWiseDbContext.People.Add(person2);
 
-      contextData.CurrentUser = person1;
+        contextData.CurrentUser = person1;
 
-      person1.AddBloodPressureReading(new BloodPressureReading(119, 82, 80));
-      person1.AddBloodPressureReading(new BloodPressureReading(113, 78, 75));
+        person1.AddBloodPressureReading(new BloodPressureReading(119, 82, 80));
+        person1.AddBloodPressureReading(new BloodPressureReading(113, 78, 75));
 
-      var bloodPressureReading = new BloodPressureReading(115, 79, 82);
-      person1.AddBloodPressureReading(bloodPressureReading);
+        var bloodPressureReading = new BloodPressureReading(115, 79, 82);
+        person1.AddBloodPressureReading(bloodPressureReading);
 
-      await healthWiseDbContext.SaveChangesAsync();
+        await healthWiseDbContext.SaveChangesAsync();
 
-      person1.RemoveBloodPressureReading(bloodPressureReading);
+        person1.RemoveBloodPressureReading(bloodPressureReading);
 
-      await healthWiseDbContext.SaveChangesAsync();
+        await healthWiseDbContext.SaveChangesAsync();
+      }
     }
   }
 }

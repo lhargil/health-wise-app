@@ -27,12 +27,8 @@
               "projects/health-wise-app/src/favicon.ico",
               "projects/health-wise-app/src/assets"
             ],
-            "styles": [
-              "projects/health-wise-app/src/tailwind.scss"
-            ],
-            "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js"
-            ],
+            "styles": ["projects/health-wise-app/src/tailwind.scss"],
+            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js"
             },
@@ -46,11 +42,21 @@
             ]
           },
           "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/health-wise-app/src/environments/environment.ts",
+                  "with": "projects/health-wise-app/src/environments/environment.local.ts"
+                }
+              ]
+            },
             "production": {
-              "fileReplacements": [{
-                "replace": "projects/health-wise-app/src/environments/environment.ts",
-                "with": "projects/health-wise-app/src/environments/environment.prod.ts"
-              }],
+              "fileReplacements": [
+                {
+                  "replace": "projects/health-wise-app/src/environments/environment.ts",
+                  "with": "projects/health-wise-app/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -59,7 +65,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [{
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
@@ -82,6 +89,9 @@
             }
           },
           "configurations": {
+            "local": {
+              "browserTarget": "health-wise-app:build:local"
+            },
             "production": {
               "browserTarget": "health-wise-app:build:production"
             }
@@ -104,9 +114,7 @@
               "projects/health-wise-app/src/favicon.ico",
               "projects/health-wise-app/src/assets"
             ],
-            "styles": [
-              "projects/health-wise-app/src/tailwind.scss"
-            ],
+            "styles": ["projects/health-wise-app/src/tailwind.scss"],
             "scripts": []
           }
         },
@@ -118,9 +126,7 @@
               "projects/health-wise-app/tsconfig.spec.json",
               "projects/health-wise-app/e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
