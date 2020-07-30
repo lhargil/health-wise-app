@@ -29,6 +29,7 @@ namespace HealthWiseBackend.API.Controllers
     {
       var bloodPressureReadings = await _healthWiseDbContext.BloodPressureReadings
         .Where(reading => reading.PersonId == personId)
+        .OrderBy(o => o.DateTaken)
         .Select(reading => new BloodPressureReadingDto
         {
           Id = reading.Id,
@@ -78,6 +79,7 @@ namespace HealthWiseBackend.API.Controllers
     public async Task<ActionResult> Post(Guid personId, [FromBody] BloodPressureReadingInput bloodPressureReadingInput)
     {
       var bloodPressureReadingToCreate = new BloodPressureReading(bloodPressureReadingInput.Systole, bloodPressureReadingInput.Diastole, bloodPressureReadingInput.HeartRate);
+      bloodPressureReadingToCreate.DateTaken = bloodPressureReadingInput.DateTaken;
 
       var person = await _healthWiseDbContext.People.FindAsync(personId);
 

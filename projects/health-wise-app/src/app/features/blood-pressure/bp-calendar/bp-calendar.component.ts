@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
-import { startOfDay, isSameMonth, isSameDay, parseISO } from 'date-fns';
+import { startOfDay, isSameMonth, isSameDay, parseISO, formatISO } from 'date-fns';
 import { SlideInService } from '../../../shared/slide-in/slide-in.service';
 import { ModalModes } from '../../../shared/slide-in/modal-state';
 import { BloodPressureFormShellComponent } from '../blood-pressure-form/blood-pressure-form-shell.component';
@@ -120,7 +120,7 @@ export class BpCalendarComponent implements OnInit {
       systole: 140,
       diastole: 80,
       heartRate: 80,
-      dateTaken: date.toISOString(),
+      dateTaken: formatISO(date),
     } as BloodPressureReading;
   }
 
@@ -145,7 +145,7 @@ export class BpCalendarComponent implements OnInit {
   handleSave(): (eventData: any, afterSave?: () => void) => void {
     return (updatedBloodPressureReading: BloodPressureReading, afterSave?: () => void) => {
       if (!updatedBloodPressureReading.id) {
-        updatedBloodPressureReading.id = uuidv4();
+        // updatedBloodPressureReading.id = uuidv4();
         this.healthService.addBloodPressureReading(updatedBloodPressureReading)
           .pipe(
             tap(_ => {
@@ -157,16 +157,17 @@ export class BpCalendarComponent implements OnInit {
           )
           .subscribe();
       } else {
-        this.healthService.updateBloodPressureReading(updatedBloodPressureReading)
-          .pipe(
-            tap(_ => {
-              this.activeDayIsOpen = false;
-              if (afterSave) {
-                afterSave();
-              }
-            })
-          )
-          .subscribe();
+        console.log(updatedBloodPressureReading);
+        // this.healthService.updateBloodPressureReading(updatedBloodPressureReading)
+        //   .pipe(
+        //     tap(_ => {
+        //       this.activeDayIsOpen = false;
+        //       if (afterSave) {
+        //         afterSave();
+        //       }
+        //     })
+        //   )
+        //   .subscribe();
       }
     };
   }
