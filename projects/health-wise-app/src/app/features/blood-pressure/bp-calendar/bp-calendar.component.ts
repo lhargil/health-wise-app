@@ -62,7 +62,7 @@ export class BpCalendarComponent implements OnInit {
           id: reading.id,
           title: `Systole: ${reading.systole} | Diastole: ${reading.diastole} | Heart rate: ${reading.heartRate}`,
           start: startOfDay(
-            parseISO(reading.dateAdded)
+            parseISO(reading.dateTaken)
           ),
           allDay: true,
           color: colors.red,
@@ -120,7 +120,7 @@ export class BpCalendarComponent implements OnInit {
       systole: 140,
       diastole: 80,
       heartRate: 80,
-      dateAdded: date.toISOString(),
+      dateTaken: date.toISOString(),
     } as BloodPressureReading;
   }
 

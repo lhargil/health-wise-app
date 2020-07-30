@@ -19,7 +19,7 @@ export class InMemoryReadingsDbService implements InMemoryDbService {
         diastole: 81,
         heartRate: 88,
         personId: '26C4A402-C6CD-42A9-8B8E-8FCF5F60C16E',
-        dateAdded: new Date('2020-07-03T00:00:00Z').toISOString(),
+        dateTaken: new Date('2020-07-03T00:00:00Z').toISOString(),
       },
       {
         id: uuidv4(),
@@ -27,7 +27,7 @@ export class InMemoryReadingsDbService implements InMemoryDbService {
         diastole: 80,
         heartRate: 79,
         personId: '26C4A402-C6CD-42A9-8B8E-8FCF5F60C16E',
-        dateAdded: new Date('2020-07-04T00:00:00Z').toISOString(),
+        dateTaken: new Date('2020-07-04T00:00:00Z').toISOString(),
       },
       {
         id: uuidv4(),
@@ -35,7 +35,7 @@ export class InMemoryReadingsDbService implements InMemoryDbService {
         diastole: 80,
         heartRate: 80,
         personId: '77E0CA71-8683-414E-B7D2-91BAA23E4253',
-        dateAdded: new Date('2020-07-05T00:00:00Z').toISOString(),
+        dateTaken: new Date('2020-07-05T00:00:00Z').toISOString(),
       },
     ] as BloodPressureReading[];
 

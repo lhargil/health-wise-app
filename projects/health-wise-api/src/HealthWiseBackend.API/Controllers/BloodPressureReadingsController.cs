@@ -35,11 +35,10 @@ namespace HealthWiseBackend.API.Controllers
           Systole = reading.Systole,
           Diastole = reading.Diastole,
           HeartRate = reading.HeartRate,
-          DateAdded = EF.Property<DateTime>(reading, "DateUpdated")
+          DateTaken = reading.DateTaken
         })
         .ToListAsync();
 
-            // 
       return Ok(bloodPressureReadings);
     }
 
@@ -55,7 +54,7 @@ namespace HealthWiseBackend.API.Controllers
           Systole = reading.Systole,
           Diastole = reading.Diastole,
           HeartRate = reading.HeartRate,
-          DateAdded = EF.Property<DateTime>(reading, "DateUpdated")
+          DateTaken = reading.DateTaken
         }).FirstOrDefaultAsync();
 
       if (bloodPressureReading == null)
@@ -67,7 +66,8 @@ namespace HealthWiseBackend.API.Controllers
         Id = bloodPressureReading.Id,
         Systole = bloodPressureReading.Systole,
         Diastole = bloodPressureReading.Diastole,
-        HeartRate = bloodPressureReading.HeartRate
+        HeartRate = bloodPressureReading.HeartRate,
+        DateTaken = bloodPressureReading.DateTaken
       };
 
       return Ok(bloodPressureReadingDto);
@@ -94,7 +94,8 @@ namespace HealthWiseBackend.API.Controllers
         Id = bloodPressureReadingToCreate.Id,
         Systole = bloodPressureReadingToCreate.Systole,
         Diastole = bloodPressureReadingToCreate.Diastole,
-        HeartRate = bloodPressureReadingToCreate.HeartRate
+        HeartRate = bloodPressureReadingToCreate.HeartRate,
+        DateTaken = bloodPressureReadingToCreate.DateTaken
       });
     }
 

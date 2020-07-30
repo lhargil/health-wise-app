@@ -8,6 +8,6 @@ namespace HealthWiseBackend.API.Dtos
     public int Systole { get; set; }
     public int Diastole { get; set; }
     public int HeartRate { get; set; }
-    public DateTime DateAdded { get; set; }
+    public DateTime DateTaken { get; set; }
   }
 }

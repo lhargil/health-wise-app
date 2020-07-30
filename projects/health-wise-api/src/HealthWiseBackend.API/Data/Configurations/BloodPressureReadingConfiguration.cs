@@ -1,4 +1,5 @@
 using HealthWiseBackend.API.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,10 @@ namespace HealthWiseBackend.API.Data.Configurations
         .HasOne(p => p.Person)
         .WithMany(p => p.BloodPressureReadings)
         .HasForeignKey(p => p.PersonId);
+
+      builder
+        .Property(p => p.DateTaken)
+        .HasDefaultValueSql("now()");
 
       base.Configure(builder);
     }
