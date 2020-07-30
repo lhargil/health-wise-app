@@ -30,7 +30,12 @@ export class BloodPressureFormShellComponent
       return;
     }
 
-    callback(this.formGroup.value);
+    callback({
+      systole: +this.formGroup.get('systole')?.value,
+      diastole: +this.formGroup.get('diastole')?.value,
+      heartRate: +this.formGroup.get('heartRate')?.value,
+      dateTaken: this.formGroup.get('dateTaken')?.value
+    } as BloodPressureReading);
   }
 
   ngOnInit(): void {
