@@ -4,6 +4,10 @@
 name: Build Angular frontend
 
 on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
@@ -32,4 +36,3 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build:prod
-    - run: npm test
