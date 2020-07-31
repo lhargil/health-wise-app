@@ -1,18 +1,14 @@
 name: .NET Core
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
       name:
         # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
+        description: 'Random word for kicks'
         # Default value if no value is explicitly provided
-        default: 'World'
+        default: 'Chocolate'
         # Input has to be provided for the workflow to run
         required: true
 
@@ -28,6 +24,6 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore ./projects/health-wise-api/src/HealthWiseBackend.API
     - name: Build
       run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API --configuration Release --no-restore
