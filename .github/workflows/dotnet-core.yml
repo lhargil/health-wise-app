@@ -30,6 +30,4 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API --configuration Release --no-restore
