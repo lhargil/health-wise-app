@@ -10,5 +10,6 @@ export interface BloodPressureReading {
   systole: number;
   diastole: number;
   heartRate: number;
-  dateAdded: string;
+  personId: string;
+  dateTaken: string;
 }

@@ -3,16 +3,17 @@ import { CoreModule } from '../core.module';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BloodPressureReading } from '../models';
 import { Observable, Subject } from 'rxjs';
+import { environment } from 'projects/health-wise-app/src/environments/environment';
 
 @Injectable({
   providedIn: CoreModule
 })
 export class BloodPressureReadingsService {
-  private apiUrl = '/api/bp-readings';
+  private apiUrl = `${environment.healthWiseUrl}/api/people`;
   constructor(private httpClient: HttpClient) { }
 
   getReadings(): Observable<BloodPressureReading[]> {
-    return this.httpClient.get<BloodPressureReading[]>(this.apiUrl);
+    return this.httpClient.get<BloodPressureReading[]>(`${this.apiUrl}/`);
   }
 
   addReading(bloodPressureReading: BloodPressureReading) {

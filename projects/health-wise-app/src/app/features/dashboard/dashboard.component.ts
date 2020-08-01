@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
             const series: any[] = [];
 
             readings.forEach((reading) => {
-              const x = new Date(reading.dateAdded).getTime();
+              const x = new Date(reading.dateTaken).getTime();
               series.push([x, reading.systole]);
             });
 
@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
               const series: any[] = [];
 
               readings.forEach((reading) => {
-                const x = new Date(reading.dateAdded).getTime();
+                const x = new Date(reading.dateTaken).getTime();
                 series.push([x, reading.diastole]);
               });
 
@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
               const series: any[] = [];
 
               readings.forEach((reading) => {
-                const x = new Date(reading.dateAdded).getTime();
+                const x = new Date(reading.dateTaken).getTime();
                 series.push([x, reading.heartRate]);
               });
 

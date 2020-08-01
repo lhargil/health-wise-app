@@ -1,3 +1,5 @@
+![Build .NET Core backend](https://github.com/lhargil/health-wise-app/workflows/Build%20.NET%20Core%20backend/badge.svg) ![Build Angular frontend](https://github.com/lhargil/health-wise-app/workflows/Build%20Angular%20frontend/badge.svg)
+
 # Frontend
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.

@@ -21,7 +21,8 @@ export class BloodPressureFormComponent implements OnInit {
       systole: [bloodPressureReading.systole, [Validators.required]],
       diastole: [bloodPressureReading.diastole, [Validators.required]],
       heartRate: [bloodPressureReading.heartRate, [Validators.required]],
-      dateAdded: [bloodPressureReading.dateAdded],
+      personId: [bloodPressureReading.personId],
+      dateTaken: [bloodPressureReading.dateTaken],
     };
 
     this.bloodPressureForm = this.fb.group(config);

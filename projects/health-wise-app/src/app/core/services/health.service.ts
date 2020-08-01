@@ -6,17 +6,18 @@ import { Observable, throwError, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BloodPressureReading } from '../models';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
+import { environment } from 'projects/health-wise-app/src/environments/environment';
 
 @Injectable({
   providedIn: CoreModule
 })
 export class HealthService extends ObservableStore<HealthStore> {
-  private bloodPressureUrl = 'api/bp-readings';
+  private bloodPressureUrl = `${environment.healthWiseUrl}/api/people`;
   constructor(private http: HttpClient) {
     super({ trackStateHistory: true });
   }
   private fetchBloodPressureReadings() {
-    return this.http.get<BloodPressureReading[]>(this.bloodPressureUrl)
+    return this.http.get<BloodPressureReading[]>(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings`)
       .pipe(
         map((bloodPressureReadings: BloodPressureReading[]) => {
           this.setState({ bloodPressureReadings }, HealthStoreActions.GetBloodPressureReadings);
@@ -53,7 +54,7 @@ export class HealthService extends ObservableStore<HealthStore> {
   }
 
   addBloodPressureReading(bloodPressureReading: BloodPressureReading) {
-    return this.http.post(this.bloodPressureUrl, bloodPressureReading, {
+    return this.http.post(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings`, bloodPressureReading, {
       headers: new HttpHeaders({ 'content-type': 'application/json' })
     })
       .pipe(
@@ -63,7 +64,7 @@ export class HealthService extends ObservableStore<HealthStore> {
   }
 
   updateBloodPressureReading(bloodPressureReading: BloodPressureReading) {
-    return this.http.put(`${this.bloodPressureUrl}/${bloodPressureReading.id}`, bloodPressureReading, { headers: new HttpHeaders({ 'content-type': 'application/json' }) })
+    return this.http.put(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings/${bloodPressureReading.id}`, bloodPressureReading, { headers: new HttpHeaders({ 'content-type': 'application/json' }) })
       .pipe(
         switchMap(_ => {
           this.setState(
@@ -77,7 +78,7 @@ export class HealthService extends ObservableStore<HealthStore> {
   }
 
   deleteBloodPressureReading(bloodPressureReading: BloodPressureReading) {
-    return this.http.delete(`${this.bloodPressureUrl}/${bloodPressureReading.id}`)
+    return this.http.delete(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings/${bloodPressureReading.id}`)
       .pipe(
         switchMap(_ => {
           const bloodPressureReadings = this.deleteLocalBloodPressureReading(bloodPressureReading.id);
