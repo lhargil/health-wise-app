@@ -8,6 +8,7 @@ using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Extensions;
 using HealthWiseBackend.API.Models;
+using HealthWiseBackend.API.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -34,6 +35,9 @@ namespace HealthWiseBackend.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+          services.Configure<AppOptions>(Configuration.GetSection(
+                                    AppOptions.OptionsString));
+                                      
           services.AddDbContext<HealthWiseDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("HealthWiseDb")));
 
           services.AddCors(options =>

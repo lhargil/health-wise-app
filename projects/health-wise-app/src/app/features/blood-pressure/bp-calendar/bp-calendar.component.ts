@@ -11,6 +11,7 @@ import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { HealthService } from '../../../core/services/health.service';
 import { HealthStore } from '../../../core/state';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 const colors: any = {
   red: {
@@ -38,6 +39,7 @@ export class BpCalendarComponent implements OnInit {
   activeDayIsOpen = false;
 
   private clickedReading$ = new Subject();
+  private selectedUser$ = new Subject<string>();
 
   private editReading$ = this.clickedReading$
     .pipe(
@@ -72,7 +74,7 @@ export class BpCalendarComponent implements OnInit {
   );
 
   constructor(private slideInService: SlideInService,
-    private healthService: HealthService) { }
+    private healthService: HealthService, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.healthService

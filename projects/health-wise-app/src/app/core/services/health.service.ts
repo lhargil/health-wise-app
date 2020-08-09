@@ -17,7 +17,7 @@ export class HealthService extends ObservableStore<HealthStore> {
     super({ trackStateHistory: true });
   }
   private fetchBloodPressureReadings() {
-    return this.http.get<BloodPressureReading[]>(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings`)
+    return this.http.get<BloodPressureReading[]>(`${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings`)
       .pipe(
         map((bloodPressureReadings: BloodPressureReading[]) => {
           this.setState({ bloodPressureReadings }, HealthStoreActions.GetBloodPressureReadings);
