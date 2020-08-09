@@ -26,11 +26,12 @@ namespace HealthWiseBackend.API
               var services = scope.ServiceProvider;
               var healthWiseDbContext = services.GetRequiredService<HealthWiseDbContext>();
               var contextData = services.GetRequiredService<IContextData>();
+              var datetimeManager = services.GetRequiredService<IDateTimeManager>();
 
               await healthWiseDbContext.Database.MigrateAsync();
 
-              await DataSeeder.Seed(healthWiseDbContext, contextData);
-          } 
+              await DataSeeder.Seed(healthWiseDbContext, contextData, datetimeManager);
+            } 
             catch (Exception exception)
             {
               var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

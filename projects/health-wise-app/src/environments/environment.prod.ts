@@ -3,5 +3,5 @@ export const environment: IEnvironment = {
   production: true,
   useLocalApi: false,
   healthWiseUrl: 'https://api-healthwise.lhargil.com',
-  testUser: '5e710343-1ec1-4e4a-5579-08d83b25ebe1',
+  testUser: 'dc1252e5-5c0d-469a-c102-08d83c6bfc0c',
 };
