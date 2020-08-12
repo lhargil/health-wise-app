@@ -9,7 +9,7 @@ import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'projects/health-wise-app/src/environments/environment';
 
 @Injectable({
-  providedIn: CoreModule
+  providedIn: CoreModule,
 })
 export class HealthService extends ObservableStore<HealthStore> {
   private bloodPressureUrl = `${environment.healthWiseUrl}/api/people`;
@@ -17,10 +17,16 @@ export class HealthService extends ObservableStore<HealthStore> {
     super({ trackStateHistory: true });
   }
   private fetchBloodPressureReadings() {
-    return this.http.get<BloodPressureReading[]>(`${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings`)
+    return this.http
+      .get<BloodPressureReading[]>(
+        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings`
+      )
       .pipe(
         map((bloodPressureReadings: BloodPressureReading[]) => {
-          this.setState({ bloodPressureReadings }, HealthStoreActions.GetBloodPressureReadings);
+          this.setState(
+            { bloodPressureReadings },
+            HealthStoreActions.GetBloodPressureReadings
+          );
           return bloodPressureReadings;
         }),
         catchError(this.handleError)
@@ -40,33 +46,50 @@ export class HealthService extends ObservableStore<HealthStore> {
   }
 
   getBloodPressureReading(id: string) {
-    return this.getBloodPressureReadings()
-      .pipe(
-        map(bloodPressureReadings => {
-          const filteredReadings = bloodPressureReadings
-            .filter((bloodPressureReading: BloodPressureReading) => bloodPressureReading.id === id);
-          const reading = (filteredReadings && filteredReadings.length) ? filteredReadings[0] : null;
-          this.setState({ bloodPressureReading: reading }, HealthStoreActions.GetBloodPressureReading);
-          return reading;
-        }),
-        catchError(this.handleError)
-      );
+    return this.getBloodPressureReadings().pipe(
+      map((bloodPressureReadings) => {
+        const filteredReadings = bloodPressureReadings.filter(
+          (bloodPressureReading: BloodPressureReading) =>
+            bloodPressureReading.id === id
+        );
+        const reading =
+          filteredReadings && filteredReadings.length
+            ? filteredReadings[0]
+            : null;
+        this.setState(
+          { bloodPressureReading: reading },
+          HealthStoreActions.GetBloodPressureReading
+        );
+        return reading;
+      }),
+      catchError(this.handleError)
+    );
   }
 
   addBloodPressureReading(bloodPressureReading: BloodPressureReading) {
-    return this.http.post(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings`, bloodPressureReading, {
-      headers: new HttpHeaders({ 'content-type': 'application/json' })
-    })
+    return this.http
+      .post(
+        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings`,
+        bloodPressureReading,
+        {
+          headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        }
+      )
       .pipe(
-        switchMap(_ => this.fetchBloodPressureReadings()),
+        switchMap((_) => this.fetchBloodPressureReadings()),
         catchError(this.handleError)
       );
   }
 
   updateBloodPressureReading(bloodPressureReading: BloodPressureReading) {
-    return this.http.put(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings/${bloodPressureReading.id}`, bloodPressureReading, { headers: new HttpHeaders({ 'content-type': 'application/json' }) })
+    return this.http
+      .put(
+        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings/${bloodPressureReading.id}`,
+        bloodPressureReading,
+        { headers: new HttpHeaders({ 'content-type': 'application/json' }) }
+      )
       .pipe(
-        switchMap(_ => {
+        switchMap((_) => {
           this.setState(
             { bloodPressureReading },
             HealthStoreActions.EditBloodPressureReading
@@ -78,11 +101,19 @@ export class HealthService extends ObservableStore<HealthStore> {
   }
 
   deleteBloodPressureReading(bloodPressureReading: BloodPressureReading) {
-    return this.http.delete(`${this.bloodPressureUrl}/5d400efd-d4c7-4198-3192-08d833c7b2be/bloodpressurereadings/${bloodPressureReading.id}`)
+    return this.http
+      .delete(
+        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings/${bloodPressureReading.id}`
+      )
       .pipe(
-        switchMap(_ => {
-          const bloodPressureReadings = this.deleteLocalBloodPressureReading(bloodPressureReading.id);
-          this.setState({ bloodPressureReadings, bloodPressureReading: null }, HealthStoreActions.DeleteBloodPressureReading);
+        switchMap((_) => {
+          const bloodPressureReadings = this.deleteLocalBloodPressureReading(
+            bloodPressureReading.id
+          );
+          this.setState(
+            { bloodPressureReadings, bloodPressureReading: null },
+            HealthStoreActions.DeleteBloodPressureReading
+          );
           return this.fetchBloodPressureReadings();
         }),
         catchError(this.handleError)
@@ -91,7 +122,7 @@ export class HealthService extends ObservableStore<HealthStore> {
 
   private deleteLocalBloodPressureReading(id: string) {
     const bloodPressureReadings = this.getState().bloodPressureReadings;
-    for (let i = bloodPressureReadings.length - 1; i--;) {
+    for (let i = bloodPressureReadings.length - 1; i--; ) {
       if (bloodPressureReadings[i].id === id) {
         bloodPressureReadings.splice(i, 1);
         break;
@@ -115,5 +146,5 @@ export enum HealthStoreActions {
   GetBloodPressureReadings = 'get_blood_pressure_readings',
   GetBloodPressureReading = 'get_blood_pressure_reading',
   EditBloodPressureReading = 'edit_blood_pressure_reading',
-  DeleteBloodPressureReading = 'delete_blood_pressure_reading'
+  DeleteBloodPressureReading = 'delete_blood_pressure_reading',
 }
