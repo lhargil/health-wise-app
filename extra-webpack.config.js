@@ -1,32 +1,32 @@
-const webpack = require('webpack');
-const purgecss = require('@fullhuman/postcss-purgecss')({
+const webpack = require("webpack");
+const purgecss = require("@fullhuman/postcss-purgecss")({
   // Specify the paths to all of the template files in your project
-  content: ['./src/**/*.html', './src/**/*.component.ts'],
+  content: ["./projects/health-wise-app/src/**/*.html", "./projects/health-wise-app/src/**/*.component.ts"],
   // Include any special characters you're using in this regular expression
-  defaultExtractor: content => content.match(/[\w-/.:]+(?<!:)/g) || []
+  defaultExtractor: (content) => content.match(/[\w-/.:]+(?<!:)/g) || [],
 });
 
 module.exports = (config, options) => {
   console.log(`Using '${config.mode}' mode`);
   config.plugins.push(new webpack.DefinePlugin({
-    'process.env.RESUME_BUILDER_BASEURL': JSON.stringify(process.env.RESUME_BUILDER_BASEURL),
-    'process.env.RESUME_BUILDER_ENVIRONMENT': JSON.stringify(process.env.RESUME_BUILDER_ENVIRONMENT),
+    'process.env.HEALTHWISE_BASEURL': JSON.stringify(process.env.HEALTHWISE_BASEURL),
+    'process.env.HEALTHWISE_ENVIRONMENT': JSON.stringify(process.env.HEALTHWISE_ENVIRONMENT),
   }));
   config.module.rules.push({
     test: /\.scss$/,
-    use: [
-      {
-        loader: 'postcss-loader',
-        options: {
-          plugins: [
-            require('postcss-import'),
-            require('tailwindcss')('./tailwind.config.js'),
-            require('autoprefixer'),
-            ...(config.mode === 'production' ? [purgecss] : [])
-          ]
-        }
-      }
-    ]
+    use: [{
+      loader: "postcss-loader",
+      options: {
+        ident: "postcss",
+        syntax: "postcss-scss",
+        plugins: [
+          require("postcss-import"),
+          require("tailwindcss")("./tailwind.config.js"),
+          require("autoprefixer"),
+          ...(config.mode === "production" ? [purgecss] : []),
+        ],
+      },
+    }, ],
   });
   return config;
 };

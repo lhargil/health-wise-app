@@ -1,6 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
-import { startOfDay, isSameMonth, isSameDay, parseISO, formatISO } from 'date-fns';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import {
+  CalendarEvent,
+  CalendarEventTimesChangedEvent,
+  CalendarView,
+} from 'angular-calendar';
+import {
+  startOfDay,
+  isSameMonth,
+  isSameDay,
+  parseISO,
+  formatISO,
+  parse,
+} from 'date-fns';
+import { format } from 'date-fns-tz';
+import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
 import { SlideInService } from '../../../shared/slide-in/slide-in.service';
 import { ModalModes } from '../../../shared/slide-in/modal-state';
 import { BloodPressureFormShellComponent } from '../blood-pressure-form/blood-pressure-form-shell.component';
@@ -11,6 +24,7 @@ import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { HealthService } from '../../../core/services/health.service';
 import { HealthStore } from '../../../core/state';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 const colors: any = {
   red: {
@@ -38,46 +52,63 @@ export class BpCalendarComponent implements OnInit {
   activeDayIsOpen = false;
 
   private clickedReading$ = new Subject();
+  private selectedUser$ = new Subject<string>();
 
-  private editReading$ = this.clickedReading$
-    .pipe(
-      switchMap((id: string) => {
-        return this.healthService.getBloodPressureReading(id);
-      }),
-      tap((reading: BloodPressureReading) => this.slideInService.show({
+  private editReading$ = this.clickedReading$.pipe(
+    switchMap((id: string) => {
+      return this.healthService.getBloodPressureReading(id);
+    }),
+    tap((reading: BloodPressureReading) =>
+      this.slideInService.show({
         heading: 'Edit blood pressure reading',
         formData: { ...reading },
         modalMode: ModalModes.Update,
         component: BloodPressureFormShellComponent,
         handleSave: this.handleSave(),
-        handleDelete: this.handleDelete()
-      }))
-    );
+        handleDelete: this.handleDelete(),
+      })
+    )
+  );
 
   public bloodPressureReadings$ = this.healthService.stateChanged.pipe(
     filter((state: any) => !!state),
     map((state: HealthStore) => {
-      return state.bloodPressureReadings.map((reading: BloodPressureReading) => {
-        return {
-          id: reading.id,
-          title: `Systole: ${reading.systole} | Diastole: ${reading.diastole} | Heart rate: ${reading.heartRate}`,
-          start: startOfDay(
-            parseISO(reading.dateTaken)
-          ),
-          allDay: true,
-          color: colors.red,
-        } as CalendarEvent;
-      });
+      return state.bloodPressureReadings.map(
+        (reading: BloodPressureReading) => {
+          console.log(
+            reading.dateTaken,
+            utcToZonedTime(
+              new Date(reading.dateTaken),
+              Intl.DateTimeFormat().resolvedOptions().timeZone
+            )
+          );
+          return {
+            id: reading.id,
+            title: `Systole: ${reading.systole} | Diastole: ${reading.diastole} | Heart rate: ${reading.heartRate}`,
+            start: startOfDay(
+              utcToZonedTime(
+                new Date(reading.dateTaken),
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+              )
+              // format(reading.dateTaken, 'yyyy-MM-dd HH:mm:ssZ', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+            ),
+            allDay: true,
+            color: colors.red,
+          } as CalendarEvent;
+        }
+      );
     })
   );
 
-  constructor(private slideInService: SlideInService,
-    private healthService: HealthService) { }
+  constructor(
+    private slideInService: SlideInService,
+    private healthService: HealthService,
+    private activatedRoute: ActivatedRoute,
+    @Inject(LOCALE_ID) private locale: string
+  ) {}
 
   ngOnInit() {
-    this.healthService
-      .getBloodPressureReadings()
-      .subscribe();
+    this.healthService.getBloodPressureReadings().subscribe();
     this.editReading$.subscribe();
   }
 
@@ -90,7 +121,13 @@ export class BpCalendarComponent implements OnInit {
     this.clickedReading$.next(event.id);
   }
 
-  onDayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  onDayClicked({
+    date,
+    events,
+  }: {
+    date: Date;
+    events: CalendarEvent[];
+  }): void {
     if (isSameMonth(date, this.viewDate)) {
       if (
         (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
@@ -108,30 +145,35 @@ export class BpCalendarComponent implements OnInit {
           formData: this.getDefaultReading(date),
           modalMode: ModalModes.Create,
           component: BloodPressureFormShellComponent,
-          handleSave: this.handleSave()
+          handleSave: this.handleSave(),
         });
       }
     }
   }
 
   private getDefaultReading(date: Date): BloodPressureReading {
+    console.log();
     return {
       id: '',
       systole: 140,
       diastole: 80,
       heartRate: 80,
-      dateTaken: formatISO(date),
+      dateTaken: date.toLocaleDateString(),
     } as BloodPressureReading;
   }
 
   handleDelete(): (eventData: any, afterDelete?: () => void) => void {
-    return (bloodPressureReading: BloodPressureReading, afterDelete?: () => void) => {
+    return (
+      bloodPressureReading: BloodPressureReading,
+      afterDelete?: () => void
+    ) => {
       if (!bloodPressureReading) {
         return;
       }
-      this.healthService.deleteBloodPressureReading(bloodPressureReading)
+      this.healthService
+        .deleteBloodPressureReading(bloodPressureReading)
         .pipe(
-          tap(_ => {
+          tap((_) => {
             this.activeDayIsOpen = false;
             if (afterDelete) {
               afterDelete();
@@ -143,12 +185,22 @@ export class BpCalendarComponent implements OnInit {
   }
 
   handleSave(): (eventData: any, afterSave?: () => void) => void {
-    return (updatedBloodPressureReading: BloodPressureReading, afterSave?: () => void) => {
+    return (
+      updatedBloodPressureReading: BloodPressureReading,
+      afterSave?: () => void
+    ) => {
       if (!updatedBloodPressureReading.id) {
-        // updatedBloodPressureReading.id = uuidv4();
-        this.healthService.addBloodPressureReading(updatedBloodPressureReading)
+        // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        updatedBloodPressureReading.dateTaken = formatISO(
+          new Date(updatedBloodPressureReading.dateTaken),
+          {
+            representation: 'complete',
+          }
+        );
+        this.healthService
+          .addBloodPressureReading(updatedBloodPressureReading)
           .pipe(
-            tap(_ => {
+            tap((_) => {
               this.activeDayIsOpen = false;
               if (afterSave) {
                 afterSave();
@@ -157,17 +209,17 @@ export class BpCalendarComponent implements OnInit {
           )
           .subscribe();
       } else {
-        console.log(updatedBloodPressureReading);
-        // this.healthService.updateBloodPressureReading(updatedBloodPressureReading)
-        //   .pipe(
-        //     tap(_ => {
-        //       this.activeDayIsOpen = false;
-        //       if (afterSave) {
-        //         afterSave();
-        //       }
-        //     })
-        //   )
-        //   .subscribe();
+        this.healthService
+          .updateBloodPressureReading(updatedBloodPressureReading)
+          .pipe(
+            tap((_) => {
+              this.activeDayIsOpen = false;
+              if (afterSave) {
+                afterSave();
+              }
+            })
+          )
+          .subscribe();
       }
     };
   }
