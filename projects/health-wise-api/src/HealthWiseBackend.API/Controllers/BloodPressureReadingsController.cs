@@ -30,14 +30,7 @@ namespace HealthWiseBackend.API.Controllers
       var bloodPressureReadings = await _healthWiseDbContext.BloodPressureReadings
         .Where(reading => reading.PersonId == personId)
         .OrderBy(o => o.DateTaken)
-        .Select(reading => new BloodPressureReadingDto
-        {
-          Id = reading.Id,
-          Systole = reading.Systole,
-          Diastole = reading.Diastole,
-          HeartRate = reading.HeartRate,
-          DateTaken = reading.DateTaken
-        })
+        .Select(reading => BloodPressureReadingDto.Create(reading))
         .ToListAsync();
 
       return Ok(bloodPressureReadings);
@@ -49,27 +42,14 @@ namespace HealthWiseBackend.API.Controllers
     {
       var bloodPressureReading = await _healthWiseDbContext.BloodPressureReadings
         .Where(reading => reading.PersonId == personId && reading.Id == id)
-        .Select(reading => new BloodPressureReadingDto
-        {
-          Id = reading.Id,
-          Systole = reading.Systole,
-          Diastole = reading.Diastole,
-          HeartRate = reading.HeartRate,
-          DateTaken = reading.DateTaken
-        }).FirstOrDefaultAsync();
+        .FirstOrDefaultAsync();
 
       if (bloodPressureReading == null)
       {
         return NotFound("The blood pressure reading does not exist");
       }
 
-      var bloodPressureReadingDto = new BloodPressureReadingDto {
-        Id = bloodPressureReading.Id,
-        Systole = bloodPressureReading.Systole,
-        Diastole = bloodPressureReading.Diastole,
-        HeartRate = bloodPressureReading.HeartRate,
-        DateTaken = bloodPressureReading.DateTaken
-      };
+      var bloodPressureReadingDto = BloodPressureReadingDto.Create(bloodPressureReading);
 
       return Ok(bloodPressureReadingDto);
     }
@@ -92,13 +72,7 @@ namespace HealthWiseBackend.API.Controllers
 
       await _healthWiseDbContext.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(this.Get), new { personId, id = bloodPressureReadingToCreate.Id }, new BloodPressureReadingDto {
-        Id = bloodPressureReadingToCreate.Id,
-        Systole = bloodPressureReadingToCreate.Systole,
-        Diastole = bloodPressureReadingToCreate.Diastole,
-        HeartRate = bloodPressureReadingToCreate.HeartRate,
-        DateTaken = bloodPressureReadingToCreate.DateTaken
-      });
+      return CreatedAtAction(nameof(this.Get), new { personId, id = bloodPressureReadingToCreate.Id }, BloodPressureReadingDto.Create(bloodPressureReadingToCreate));
     }
 
     // DELETE api/<BloodPressureReadingsController>/5
