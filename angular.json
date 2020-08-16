@@ -27,7 +27,10 @@
               "projects/health-wise-app/src/favicon.ico",
               "projects/health-wise-app/src/assets"
             ],
-            "styles": ["projects/health-wise-app/src/tailwind.scss", "./node_modules/angular-calendar/css/angular-calendar.css"],
+            "styles": [
+              "projects/health-wise-app/src/tailwind.scss",
+              "./node_modules/angular-calendar/css/angular-calendar.css"
+            ],
             "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js"
@@ -35,6 +38,7 @@
             "allowedCommonJsDependencies": [
               "angular-calendar",
               "calendar-utils/date-adapters/date-fns",
+              "apexcharts",
               "@mattlewis92/dom-autoscroller",
               "dom-set",
               "dom-plane",
@@ -43,16 +47,20 @@
           },
           "configurations": {
             "local": {
-              "fileReplacements": [{
-                "replace": "projects/health-wise-app/src/environments/environment.ts",
-                "with": "projects/health-wise-app/src/environments/environment.local.ts"
-              }]
+              "fileReplacements": [
+                {
+                  "replace": "projects/health-wise-app/src/environments/environment.ts",
+                  "with": "projects/health-wise-app/src/environments/environment.local.ts"
+                }
+              ]
             },
             "production": {
-              "fileReplacements": [{
-                "replace": "projects/health-wise-app/src/environments/environment.ts",
-                "with": "projects/health-wise-app/src/environments/environment.prod.ts"
-              }],
+              "fileReplacements": [
+                {
+                  "replace": "projects/health-wise-app/src/environments/environment.ts",
+                  "with": "projects/health-wise-app/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -61,7 +69,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [{
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
