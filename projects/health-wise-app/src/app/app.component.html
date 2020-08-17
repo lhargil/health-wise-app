@@ -1,2 +1,7 @@
+<div>
+  <button *ngIf="!isLoggedIn" type="button" (click)="login()">Login</button>
+  <button *ngIf="isLoggedIn" type="button" (click)="logout()">Logout</button>
+</div>
+
 <hwa-sidebar-layout></hwa-sidebar-layout>
 <hwa-slide-in-host></hwa-slide-in-host>

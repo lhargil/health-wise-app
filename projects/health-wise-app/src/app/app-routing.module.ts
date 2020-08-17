@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { SigninRedirectCallbackComponent } from './signin-redirect-callback.component';
+import { SignoutRedirectCallbackComponent } from './signout-redirect-callback.component';
 
 const routes: Routes = [
   {
@@ -15,6 +17,14 @@ const routes: Routes = [
       import('./features/dashboard/dashboard.module').then(
         (m) => m.DashboardModule
       ),
+  },
+  {
+    path: 'signin-callback',
+    component: SigninRedirectCallbackComponent,
+  },
+  {
+    path: 'signout-callback',
+    component: SignoutRedirectCallbackComponent,
   },
 ];
 
