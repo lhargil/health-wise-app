@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'hwa-signout-redirect',
-  template: `<div></div>`,
+  template: `<div><h1>Signing you out...</h1></div>`,
 })
 export class SignoutRedirectCallbackComponent implements OnInit {
   constructor(private authService: AuthServiceX, private router: Router) {}

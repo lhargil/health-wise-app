@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <button
     *ngIf="!authService.loggedIn"
     type="button"
@@ -13,6 +13,13 @@
   >
     Logout
   </button>
+</div> -->
+<div>
+  <button type="button" (click)="login()">
+    Sign in
+  </button>
+  <button type="button" (click)="logout()">
+    Sign out
+  </button>
 </div>
-
 <router-outlet></router-outlet>

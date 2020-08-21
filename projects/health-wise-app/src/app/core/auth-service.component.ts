@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { IAuthConfig } from '../../environments/ienvironment';
 import { AUTH_CONFIG } from './tokens';
 
-@Injectable({ providedIn: CoreModule })
+@Injectable({ providedIn: 'root' })
 export class AuthServiceX {
   private userManager: UserManager;
   private user: User;
@@ -15,20 +15,22 @@ export class AuthServiceX {
   loginChanged$ = this.loginChangedSubject.asObservable();
   constructor(@Inject(AUTH_CONFIG) readonly authConfig: IAuthConfig) {
     const stsSettings = {
-      authority: authConfig.stsAuthority,
+      authority: `https://${authConfig.stsAuthority}/`,
       client_id: authConfig.clientId,
-      redirect_uri: `${authConfig.clientRoot}signin-callback`,
-      scope: 'opendid profile health-wise-api',
+      redirect_uri: `${authConfig.clientRoot}/signin-callback`,
+      scope: `openid profile ${authConfig.audience}`,
       response_type: 'code',
       metadata: {
-        issuer: `${authConfig.stsAuthority}`,
-        authorization_endpoint: `${authConfig.stsAuthority}authorize`,
-        jwks_uri: `${authConfig.stsAuthority}.well-known/jwks.json`,
-        token_endpoint: `${authConfig.stsAuthority}oauth/token`,
-        userinfo_endpoint: `${authConfig.stsAuthority}userinfo`,
-        end_session_endpoint: `${authConfig.stsAuthority}v2/logout?client_id=${
-          authConfig.clientId
-        }&returnTo=${encodeURI(authConfig.clientRoot)}signout-callback`,
+        issuer: `https://${authConfig.stsAuthority}/`,
+        authorization_endpoint: `https://${authConfig.stsAuthority}/authorize?audience=${authConfig.audience}`,
+        jwks_uri: `https://${authConfig.stsAuthority}/.well-known/jwks.json`,
+        token_endpoint: `https://${authConfig.stsAuthority}/oauth/token`,
+        userinfo_endpoint: `https://${authConfig.stsAuthority}/userinfo`,
+        end_session_endpoint: `https://${
+          authConfig.stsAuthority
+        }/v2/logout?client_id=${authConfig.clientId}&returnTo=${encodeURI(
+          authConfig.clientRoot
+        )}/signout-callback`,
       },
     };
     this.userManager = new UserManager(stsSettings);
@@ -64,5 +66,15 @@ export class AuthServiceX {
 
   completeLogout() {
     return this.userManager.signoutRedirectCallback();
+  }
+
+  getAccessToken() {
+    return this.userManager.getUser().then((user) => {
+      if (!!user && !user.expired) {
+        return user.access_token;
+      } else {
+        return null;
+      }
+    });
   }
 }

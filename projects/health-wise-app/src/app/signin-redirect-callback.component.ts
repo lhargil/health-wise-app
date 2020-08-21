@@ -9,11 +9,14 @@ import { tap } from 'rxjs/operators';
   template: '<div><h1>Signing you in...</h1></div>',
 })
 export class SigninRedirectCallbackComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authX: AuthServiceX, private router: Router) {}
 
   ngOnInit() {
-    this.authService.isAuthenticated$
-      .pipe(tap((_) => this.router.navigate(['admin/dashboard'])))
-      .subscribe();
+    this.authX.completeLogin().then((user) => {
+      this.router.navigate(['admin/dashboard'], { replaceUrl: true });
+    });
+    // this.authService.isAuthenticated$
+    //   .pipe(tap((_) => this.router.navigate(['admin/dashboard'])))
+    //   .subscribe();
   }
 }

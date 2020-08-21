@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
+import { AuthServiceX } from './core/auth-service.component';
 
 @Component({
   selector: 'hwa-root',
@@ -11,7 +12,7 @@ export class AppComponent {
   show = false;
   open = false;
   isLoggedIn = false;
-  constructor(public authService: AuthService) {}
+  constructor(private authX: AuthServiceX) {}
 
   toggle() {
     this.show = !this.show;
@@ -24,5 +25,13 @@ export class AppComponent {
     setTimeout(() => {
       this.show = false;
     }, 500);
+  }
+
+  login() {
+    this.authX.login();
+  }
+
+  logout() {
+    this.authX.logout();
   }
 }

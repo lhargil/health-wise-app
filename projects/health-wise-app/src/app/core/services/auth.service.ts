@@ -14,9 +14,9 @@ import { Router } from '@angular/router';
 import { AUTH_CONFIG } from '../tokens';
 import { IAuthConfig } from 'projects/health-wise-app/src/environments/ienvironment';
 
-@Injectable({
-  providedIn: 'root',
-})
+// @Injectable({
+//   providedIn: 'root',
+// })
 export class AuthService {
   // Create an observable of Auth0 instance of client
   auth0Client$ = (from(
