@@ -3,7 +3,7 @@ import { CoreModule } from '../core.module';
 import { environment } from 'projects/health-wise-app/src/environments/environment';
 
 @Injectable({
-  providedIn: CoreModule,
+  providedIn: 'root',
 })
 export class EnvironmentService {
   constructor() {}

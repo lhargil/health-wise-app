@@ -23,6 +23,7 @@ export class AuthService {
     createAuth0Client({
       domain: this.authConfig.stsAuthority,
       client_id: this.authConfig.clientId,
+      audience: this.authConfig.audience,
       redirect_uri: `${this.authConfig.clientRoot}`,
     })
   ) as Observable<Auth0Client>).pipe(
@@ -133,5 +134,11 @@ export class AuthService {
         returnTo: `${this.authConfig.clientRoot}`,
       });
     });
+  }
+
+  getTokenSilently$(options?: any): Observable<string> {
+    return this.auth0Client$.pipe(
+      concatMap((client: Auth0Client) => from(client.getTokenSilently(options)))
+    );
   }
 }

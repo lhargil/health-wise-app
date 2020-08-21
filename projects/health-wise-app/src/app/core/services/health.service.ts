@@ -9,7 +9,7 @@ import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'projects/health-wise-app/src/environments/environment';
 
 @Injectable({
-  providedIn: CoreModule,
+  providedIn: 'root',
 })
 export class HealthService extends ObservableStore<HealthStore> {
   private bloodPressureUrl = `${environment.healthWiseUrl}/api/people`;

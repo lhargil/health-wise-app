@@ -63,7 +63,7 @@ namespace HealthWiseBackend.API
               options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
           }).AddJwtBearer(options =>
           {
-              options.Authority = Configuration.GetValue<string>("HEALTHWISE_AUTHCONFIG_STSAUTHORITY");
+              options.Authority = $"https://{Configuration.GetValue<string>("HEALTHWISE_AUTHCONFIG_STSAUTHORITY")}/";
               options.Audience = Configuration.GetValue<string>("HEALTHWISE_AUTHCONFIG_APIID");
               options.RequireHttpsMetadata = false;
               options.TokenValidationParameters = new TokenValidationParameters

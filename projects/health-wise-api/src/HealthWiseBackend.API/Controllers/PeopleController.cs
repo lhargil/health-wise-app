@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,7 @@ namespace HealthWiseBackend.API.Controllers
     }
     // GET: api/<PeopleController>
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<List<PersonDto>>> Get()
     {
       var people = await _healthWiseDbContext.People.Select(person => new PersonDto { Id = person.Id, Firstname = person.Firstname, Lastname = person.Lastname}).ToListAsync();

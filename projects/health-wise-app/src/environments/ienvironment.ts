@@ -11,4 +11,5 @@ export interface IAuthConfig {
   apiRoot: string;
   stsAuthority: string;
   clientId: string;
+  audience: string;
 }

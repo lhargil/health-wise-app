@@ -25,6 +25,12 @@ module.exports = (config, options) => {
       "process.env.HEALTHWISE_AUTHCONFIG_CLIENTID": JSON.stringify(
         process.env.HEALTHWISE_AUTHCONFIG_CLIENTID
       ),
+      "process.env.HEALTHWISE_AUTHCONFIG_APIID": JSON.stringify(
+        process.env.HEALTHWISE_AUTHCONFIG_APIID
+      ),
+      "process.env.HEALTHWISE_TESTUSER": JSON.stringify(
+        process.env.HEALTHWISE_TESTUSER
+      ),
     })
   );
   config.module.rules.push({
