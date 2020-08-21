@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthServiceX } from './core/auth-service.component';
 import { Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'hwa-signin-callback',
@@ -11,6 +12,8 @@ export class SigninRedirectCallbackComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.router.navigate(['admin/dashboard']);
+    this.authService.isAuthenticated$
+      .pipe(tap((_) => this.router.navigate(['admin/dashboard'])))
+      .subscribe();
   }
 }
