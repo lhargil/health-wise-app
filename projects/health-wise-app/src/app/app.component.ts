@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from './core/auth-service.component';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'hwa-root',
@@ -8,22 +8,10 @@ import { AuthService } from './core/auth-service.component';
 })
 export class AppComponent {
   title = 'health-wise-app';
-  show: boolean = false;
+  show = false;
   open = false;
   isLoggedIn = false;
-  constructor(private authService: AuthService) {
-    this.authService.loginChanged$.subscribe((loggedIn: boolean) => {
-      this.isLoggedIn = loggedIn;
-    });
-  }
-
-  login() {
-    this.authService.login();
-  }
-
-  logout() {
-    this.authService.logout();
-  }
+  constructor(public authService: AuthService) {}
 
   toggle() {
     this.show = !this.show;

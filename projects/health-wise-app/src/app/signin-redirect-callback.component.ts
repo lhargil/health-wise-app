@@ -1,19 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './core/auth-service.component';
+import { AuthServiceX } from './core/auth-service.component';
 import { Router } from '@angular/router';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'hwa-signin-callback',
-  template: '<div></div>',
+  template: '<div><h1>Signing you in...</h1></div>',
 })
 export class SigninRedirectCallbackComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.authService.completeLogin().then((_) => {
-      this.router.navigate(['admin'], {
-        replaceUrl: true,
-      });
-    });
+    this.router.navigate(['admin/dashboard']);
   }
 }

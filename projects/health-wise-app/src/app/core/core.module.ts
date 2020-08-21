@@ -12,8 +12,16 @@ import { InMemoryReadingsDbService } from './services/in-memory-readings-db.serv
 
 @NgModule({
   declarations: [],
-  imports: [BrowserModule, RouterModule, HttpClientModule, environment.useLocalApi ?
-    HttpClientInMemoryWebApiModule.forRoot(InMemoryReadingsDbService, { delay: 100 }) : []],
+  imports: [
+    BrowserModule,
+    RouterModule,
+    HttpClientModule,
+    environment.useLocalApi
+      ? HttpClientInMemoryWebApiModule.forRoot(InMemoryReadingsDbService, {
+          delay: 100,
+        })
+      : [],
+  ],
   exports: [RouterModule, ReactiveFormsModule, BrowserAnimationsModule],
 })
-export class CoreModule { }
+export class CoreModule {}

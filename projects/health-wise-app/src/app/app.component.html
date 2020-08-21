@@ -1,6 +1,18 @@
 <div>
-  <button *ngIf="!isLoggedIn" type="button" (click)="login()">Login</button>
-  <button *ngIf="isLoggedIn" type="button" (click)="logout()">Logout</button>
+  <button
+    *ngIf="!authService.loggedIn"
+    type="button"
+    (click)="authService.login()"
+  >
+    Login
+  </button>
+  <button
+    *ngIf="authService.loggedIn"
+    type="button"
+    (click)="authService.logout()"
+  >
+    Logout
+  </button>
 </div>
 
 <router-outlet></router-outlet>

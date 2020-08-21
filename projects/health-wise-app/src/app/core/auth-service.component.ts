@@ -7,14 +7,13 @@ import { IAuthConfig } from '../../environments/ienvironment';
 import { AUTH_CONFIG } from './tokens';
 
 @Injectable({ providedIn: CoreModule })
-export class AuthService {
+export class AuthServiceX {
   private userManager: UserManager;
   private user: User;
 
   private loginChangedSubject = new Subject<boolean>();
   loginChanged$ = this.loginChangedSubject.asObservable();
   constructor(@Inject(AUTH_CONFIG) readonly authConfig: IAuthConfig) {
-    console.log(authConfig);
     const stsSettings = {
       authority: authConfig.stsAuthority,
       client_id: authConfig.clientId,

@@ -5,6 +5,7 @@ import { SignoutRedirectCallbackComponent } from './signout-redirect-callback.co
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -35,14 +36,17 @@ const routes: Routes = [
         pathMatch: 'full',
       },
     ],
+    canActivate: [AuthGuard],
   },
   {
     path: 'signin-callback',
     component: SigninRedirectCallbackComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'signout-callback',
     component: SignoutRedirectCallbackComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: '**',
@@ -51,7 +55,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: false })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
