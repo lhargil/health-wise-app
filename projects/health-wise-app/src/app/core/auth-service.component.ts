@@ -9,7 +9,7 @@ import { AUTH_CONFIG } from './tokens';
 @Injectable({ providedIn: 'root' })
 export class AuthServiceX {
   private userManager: UserManager;
-  private user: User;
+  private user: User | null;
 
   private loginChangedSubject = new Subject<boolean>();
   loginChanged$ = this.loginChangedSubject.asObservable();
@@ -20,6 +20,8 @@ export class AuthServiceX {
       redirect_uri: `${authConfig.clientRoot}/signin-callback`,
       scope: `openid profile ${authConfig.audience}`,
       response_type: 'code',
+      automaticSilentRenew: true,
+      silent_redirect_uri: `${authConfig.clientRoot}/assets/silent-callback.html`,
       metadata: {
         issuer: `https://${authConfig.stsAuthority}/`,
         authorization_endpoint: `https://${authConfig.stsAuthority}/authorize?audience=${authConfig.audience}`,
@@ -34,6 +36,9 @@ export class AuthServiceX {
       },
     };
     this.userManager = new UserManager(stsSettings);
+    this.userManager.events.addAccessTokenExpired((_) => {
+      this.loginChangedSubject.next(false);
+    });
   }
 
   login() {
@@ -65,6 +70,8 @@ export class AuthServiceX {
   }
 
   completeLogout() {
+    this.user = null;
+    this.loginChangedSubject.next(false);
     return this.userManager.signoutRedirectCallback();
   }
 
