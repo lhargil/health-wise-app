@@ -13,6 +13,7 @@ export const AUTH_CONFIG = new InjectionToken<IAuthConfig>(
         apiRoot: authConfig.apiRoot,
         stsAuthority: authConfig.stsAuthority,
         clientId: authConfig.clientId,
+        audience: authConfig.audience,
       };
     },
   }

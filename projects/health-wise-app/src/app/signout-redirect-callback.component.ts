@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './core/auth-service.component';
+import { AuthServiceX } from './core/auth-service.component';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'hwa-signout-redirect',
-  template: `<div></div>`,
+  template: `<div><h1>Signing you out...</h1></div>`,
 })
 export class SignoutRedirectCallbackComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthServiceX, private router: Router) {}
 
   ngOnInit() {
     this.authService.completeLogout().then((_) => {

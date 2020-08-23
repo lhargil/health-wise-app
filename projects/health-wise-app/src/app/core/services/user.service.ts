@@ -3,13 +3,13 @@ import { CoreModule } from '../core.module';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: CoreModule
+  providedIn: 'root',
 })
 export class UserService {
   private userSubject = new BehaviorSubject<string | null>(null);
   currentUser$ = this.userSubject.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   setUser(id: string) {
     this.userSubject.next(id);

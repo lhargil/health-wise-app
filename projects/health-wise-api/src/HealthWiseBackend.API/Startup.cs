@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Core.Concrete;
@@ -9,17 +10,21 @@ using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Extensions;
 using HealthWiseBackend.API.Models;
 using HealthWiseBackend.API.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HealthWiseBackend.API
 {
@@ -37,7 +42,7 @@ namespace HealthWiseBackend.API
         {
           services.Configure<AppOptions>(Configuration.GetSection(
                                     AppOptions.OptionsString));
-                                      
+
           services.AddDbContext<HealthWiseDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("HealthWiseDb")));
 
           services.AddCors(options =>
@@ -52,11 +57,31 @@ namespace HealthWiseBackend.API
             });
           });
 
+          services.AddAuthentication(options =>
+          {
+              options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+              options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+          }).AddJwtBearer(options =>
+          {
+              options.Authority = $"https://{Configuration.GetValue<string>("HEALTHWISE_AUTHCONFIG_STSAUTHORITY")}/";
+              options.Audience = Configuration.GetValue<string>("HEALTHWISE_AUTHCONFIG_APIID");
+              options.RequireHttpsMetadata = false;
+              options.TokenValidationParameters = new TokenValidationParameters
+              {
+                NameClaimType = ClaimTypes.NameIdentifier
+              };
+          });
+
           services.AddControllers(options => {
 
             // requires using Microsoft.AspNetCore.Mvc.Formatters;
             options.OutputFormatters.RemoveType<StringOutputFormatter>();
             options.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+
+            var policy = new AuthorizationPolicyBuilder()
+              .RequireAuthenticatedUser()
+              .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
           })
           .AddJsonOptions(options =>
           {
@@ -109,6 +134,7 @@ namespace HealthWiseBackend.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseRequestContextDataMiddleware();
