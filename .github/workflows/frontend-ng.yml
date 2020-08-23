@@ -43,3 +43,8 @@ jobs:
         HEALTHWISE_AUTHCONFIG_CLIENTROOT: ${{ secrets.HEALTHWISE_AUTHCONFIG_CLIENTROOT }}
         HEALTHWISE_AUTHCONFIG_STSAUTHORITY: ${{ secrets.HEALTHWISE_AUTHCONFIG_STSAUTHORITY }}
         HEALTHWISE_TESTUSER: ${{ secrets.HEALTHWISE_TESTUSER }}
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.1.4
+      with:
+        name: health-wise-app-artifact
+        path: ${{ github.workspace }}/dist/health-wise/app
