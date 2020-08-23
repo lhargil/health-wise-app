@@ -47,4 +47,4 @@ jobs:
       uses: actions/upload-artifact@v2.1.4
       with:
         name: health-wise-app-artifact
-        path: ${{ github.workspace }}/dist/health-wise/app
+        path: dist/health-wise-app
