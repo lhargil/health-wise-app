@@ -14,6 +14,7 @@ namespace HealthWiseBackend.API.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
+  [Authorize(Roles = "Admin")]
   public class PeopleController : ControllerBase
   {
     private readonly HealthWiseDbContext _healthWiseDbContext;
@@ -24,7 +25,6 @@ namespace HealthWiseBackend.API.Controllers
     }
     // GET: api/<PeopleController>
     [HttpGet]
-    [AllowAnonymous]
     public async Task<ActionResult<List<PersonDto>>> Get()
     {
       var people = await _healthWiseDbContext.People.Select(person => new PersonDto { Id = person.Id, Firstname = person.Firstname, Lastname = person.Lastname}).ToListAsync();

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Dtos;
 using HealthWiseBackend.API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -15,6 +16,7 @@ namespace HealthWiseBackend.API.Controllers
 {
   [Route("api/people/{personId}/[controller]")]
   [ApiController]
+  [Authorize(Roles = "StandardUser")]
   public class BloodPressureReadingsController : ControllerBase
   {
     private readonly HealthWiseDbContext _healthWiseDbContext;
