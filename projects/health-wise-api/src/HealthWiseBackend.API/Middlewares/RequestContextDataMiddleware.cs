@@ -23,14 +23,12 @@ namespace HealthWiseBackend.API.Middlewares
 
     public async Task Invoke(HttpContext httpContext, IContextData svc, HealthWiseDbContext healthWiseDbContext, IOptions<AppOptions> options)
     {
-      var email = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-      var currentUser = await healthWiseDbContext.People.FindAsync(Guid.Parse(options.Value.TestUser));
-      if (currentUser == null)
+      var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (String.IsNullOrEmpty(userId))
       {
         throw new NullReferenceException("The user does not exist.");
       }
-      svc.CurrentUser = currentUser;
+      svc.CurrentUser = new Person(userId);
       await _next(httpContext);
     }
   }

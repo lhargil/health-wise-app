@@ -27,13 +27,11 @@ namespace HealthWiseBackend.API.Data
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-      modelBuilder.ApplyConfiguration(new PersonConfiguration());
       modelBuilder.ApplyConfiguration(new BloodPressureReadingConfiguration());
 
       base.OnModelCreating(modelBuilder);
     }
 
-    public DbSet<Person> People { get; set; }
     public DbSet<BloodPressureReading> BloodPressureReadings { get; set; }
 
     public override int SaveChanges()

@@ -15,11 +15,6 @@ namespace HealthWiseBackend.API.Data.Configurations
       builder.HasKey(k => k.Id);
 
       builder
-        .HasOne(p => p.Person)
-        .WithMany(p => p.BloodPressureReadings)
-        .HasForeignKey(p => p.PersonId);
-
-      builder
         .Property(p => p.DateTaken)
         .HasDefaultValueSql("now()");
 

@@ -31,7 +31,7 @@ namespace HealthWiseBackend.API
               await healthWiseDbContext.Database.MigrateAsync();
 
               await DataSeeder.Seed(healthWiseDbContext, contextData, datetimeManager);
-            } 
+            }
             catch (Exception exception)
             {
               var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

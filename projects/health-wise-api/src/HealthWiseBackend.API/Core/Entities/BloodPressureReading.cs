@@ -22,7 +22,6 @@ namespace HealthWiseBackend.API.Entities
     public int HeartRate { get; private set; }
     public DateTime DateTaken { get; set; }
 
-    public Guid PersonId { get; private set; }
-    public Person Person { get; private set; }
+    public string PersonId { get; set; }
   }
 }

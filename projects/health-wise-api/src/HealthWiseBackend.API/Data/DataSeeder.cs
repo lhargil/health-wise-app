@@ -11,28 +11,21 @@ namespace HealthWiseBackend.API.Data
   {
     public static async Task Seed(HealthWiseDbContext healthWiseDbContext, IContextData contextData, IDateTimeManager datetimeManager)
     {
-      if (!healthWiseDbContext.People.Any())
+      if (!healthWiseDbContext.BloodPressureReadings.Any())
       {
-        var person1 = new Person("lhar", "gil");
-        var person2 = new Person("jon", "snow");
-
-        healthWiseDbContext.People.Add(person1);
-        healthWiseDbContext.People.Add(person2);
-
-        contextData.CurrentUser = person1;
+        var personId = "auth0|5f38c32e2f9cdc006774a4dd";
 
         var bp1 = new BloodPressureReading(119, 82, 80);
         bp1.DateTaken = datetimeManager.Today;
+        bp1.PersonId = personId;
 
         var bp2 = new BloodPressureReading(113, 78, 75);
         bp2.DateTaken = datetimeManager.Today.AddDays(1);
+        bp2.PersonId = personId;
 
         var bp3 = new BloodPressureReading(115, 79, 82);
         bp3.DateTaken = datetimeManager.Today.AddDays(-1);
-
-        person1.AddBloodPressureReading(bp1);
-        person1.AddBloodPressureReading(bp2);
-        person1.AddBloodPressureReading(bp3);
+        bp3.PersonId = personId;
 
         await healthWiseDbContext.SaveChangesAsync();
       }

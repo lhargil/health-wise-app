@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Dtos;
 using HealthWiseBackend.API.Entities;
@@ -14,23 +15,25 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HealthWiseBackend.API.Controllers
 {
-  [Route("api/people/{personId}/[controller]")]
+  [Route("api/[controller]")]
   [ApiController]
   [Authorize(Roles = "StandardUser")]
   public class BloodPressureReadingsController : ControllerBase
   {
     private readonly HealthWiseDbContext _healthWiseDbContext;
+    private readonly IContextData _contextData;
 
-    public BloodPressureReadingsController(HealthWiseDbContext healthWiseDbContext)
+    public BloodPressureReadingsController(HealthWiseDbContext healthWiseDbContext, IContextData contextData)
     {
       _healthWiseDbContext = healthWiseDbContext;
+      _contextData = contextData;
     }
     // GET: api/<BloodPressureReadingsController>
     [HttpGet]
-    public async Task<ActionResult> Get(Guid personId)
+    public async Task<ActionResult> Get()
     {
       var bloodPressureReadings = await _healthWiseDbContext.BloodPressureReadings
-        .Where(reading => reading.PersonId == personId)
+        .Where(reading => reading.PersonId == _contextData.CurrentUser.Id)
         .OrderBy(o => o.DateTaken)
         .Select(reading => BloodPressureReadingDto.Create(reading))
         .ToListAsync();
@@ -40,10 +43,10 @@ namespace HealthWiseBackend.API.Controllers
 
     // GET api/<BloodPressureReadingsController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<BloodPressureReadingDto>> Get(Guid personId, Guid id)
+    public async Task<ActionResult<BloodPressureReadingDto>> Get(Guid id)
     {
       var bloodPressureReading = await _healthWiseDbContext.BloodPressureReadings
-        .Where(reading => reading.PersonId == personId && reading.Id == id)
+        .Where(reading => reading.PersonId == _contextData.CurrentUser.Id && reading.Id == id)
         .FirstOrDefaultAsync();
 
       if (bloodPressureReading == null)
@@ -58,36 +61,22 @@ namespace HealthWiseBackend.API.Controllers
 
     // POST api/<BloodPressureReadingsController>
     [HttpPost]
-    public async Task<ActionResult> Post(Guid personId, [FromBody] BloodPressureReadingInput bloodPressureReadingInput)
+    public async Task<ActionResult> Post([FromBody] BloodPressureReadingInput bloodPressureReadingInput)
     {
       var bloodPressureReadingToCreate = new BloodPressureReading(bloodPressureReadingInput.Systole, bloodPressureReadingInput.Diastole, bloodPressureReadingInput.HeartRate);
       bloodPressureReadingToCreate.DateTaken = bloodPressureReadingInput.DateTaken;
+      bloodPressureReadingToCreate.PersonId = _contextData.CurrentUser.Id;
 
-      var person = await _healthWiseDbContext.People.FindAsync(personId);
-
-      if (person == null)
-      {
-        return NotFound("The person does not exist");
-      }
-
-      person.AddBloodPressureReading(bloodPressureReadingToCreate);
-
+      await _healthWiseDbContext.BloodPressureReadings.AddAsync(bloodPressureReadingToCreate);
       await _healthWiseDbContext.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(this.Get), new { personId, id = bloodPressureReadingToCreate.Id }, BloodPressureReadingDto.Create(bloodPressureReadingToCreate));
+      return CreatedAtAction(nameof(this.Get), new { id = bloodPressureReadingToCreate.Id }, BloodPressureReadingDto.Create(bloodPressureReadingToCreate));
     }
 
     // DELETE api/<BloodPressureReadingsController>/5
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid personId, Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
-      var person = await _healthWiseDbContext.People.FindAsync(personId);
-
-      if (person == null)
-      {
-        return NotFound("The person does not exist");
-      }
-
       var bloodPressureReadingToRemove = await _healthWiseDbContext.BloodPressureReadings.FindAsync(id);
 
       if (bloodPressureReadingToRemove == null)
@@ -95,7 +84,7 @@ namespace HealthWiseBackend.API.Controllers
         return NotFound("The blood pressure reading to remove does not exist");
       }
 
-      person.RemoveBloodPressureReading(bloodPressureReadingToRemove);
+     _healthWiseDbContext.Remove(bloodPressureReadingToRemove);
 
       await _healthWiseDbContext.SaveChangesAsync();
 
