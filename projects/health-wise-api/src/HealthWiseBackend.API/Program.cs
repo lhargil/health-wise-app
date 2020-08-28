@@ -28,7 +28,8 @@ namespace HealthWiseBackend.API
               var contextData = services.GetRequiredService<IContextData>();
               var datetimeManager = services.GetRequiredService<IDateTimeManager>();
 
-              await healthWiseDbContext.Database.MigrateAsync();
+              await healthWiseDbContext.Database.EnsureDeletedAsync();
+              await healthWiseDbContext.Database.EnsureCreatedAsync();
 
               await DataSeeder.Seed(healthWiseDbContext, contextData, datetimeManager);
             }

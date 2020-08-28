@@ -9,7 +9,7 @@ import { environment } from 'projects/health-wise-app/src/environments/environme
   providedIn: 'root',
 })
 export class BloodPressureReadingsService {
-  private apiUrl = `${environment.healthWiseUrl}/api/people`;
+  private apiUrl = `${environment.healthWiseUrl}/api/blood-pressure`;
   constructor(private httpClient: HttpClient) {}
 
   getReadings(): Observable<BloodPressureReading[]> {

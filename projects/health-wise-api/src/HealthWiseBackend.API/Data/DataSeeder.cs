@@ -27,6 +27,8 @@ namespace HealthWiseBackend.API.Data
         bp3.DateTaken = datetimeManager.Today.AddDays(-1);
         bp3.PersonId = personId;
 
+        await healthWiseDbContext.BloodPressureReadings.AddRangeAsync(new[] { bp1, bp2, bp3 });
+
         await healthWiseDbContext.SaveChangesAsync();
       }
     }

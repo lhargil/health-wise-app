@@ -12,14 +12,14 @@ import { environment } from 'projects/health-wise-app/src/environments/environme
   providedIn: 'root',
 })
 export class HealthService extends ObservableStore<HealthStore> {
-  private bloodPressureUrl = `${environment.healthWiseUrl}/api/people`;
+  private bloodPressureUrl = `${environment.healthWiseUrl}/api/bloodpressurereadings`;
   constructor(private http: HttpClient) {
     super({ trackStateHistory: true });
   }
   private fetchBloodPressureReadings() {
     return this.http
       .get<BloodPressureReading[]>(
-        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings`
+        `${this.bloodPressureUrl}`
       )
       .pipe(
         map((bloodPressureReadings: BloodPressureReading[]) => {
@@ -69,7 +69,7 @@ export class HealthService extends ObservableStore<HealthStore> {
   addBloodPressureReading(bloodPressureReading: BloodPressureReading) {
     return this.http
       .post(
-        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings`,
+        `${this.bloodPressureUrl}`,
         bloodPressureReading,
         {
           headers: new HttpHeaders({ 'content-type': 'application/json' }),
@@ -84,7 +84,7 @@ export class HealthService extends ObservableStore<HealthStore> {
   updateBloodPressureReading(bloodPressureReading: BloodPressureReading) {
     return this.http
       .put(
-        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings/${bloodPressureReading.id}`,
+        `${this.bloodPressureUrl}/${bloodPressureReading.id}`,
         bloodPressureReading,
         { headers: new HttpHeaders({ 'content-type': 'application/json' }) }
       )
@@ -103,7 +103,7 @@ export class HealthService extends ObservableStore<HealthStore> {
   deleteBloodPressureReading(bloodPressureReading: BloodPressureReading) {
     return this.http
       .delete(
-        `${this.bloodPressureUrl}/${environment.testUser}/bloodpressurereadings/${bloodPressureReading.id}`
+        `${this.bloodPressureUrl}/${bloodPressureReading.id}`
       )
       .pipe(
         switchMap((_) => {

@@ -134,12 +134,13 @@ namespace HealthWiseBackend.API
 
             app.UseRouting();
 
+            app.UseCors("AllowAll"); 
+
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseRequestContextDataMiddleware();
-
-            app.UseCors("AllowAll");
 
             // Register the Swagger generator and the Swagger UI middlewares
             app.UseOpenApi();
