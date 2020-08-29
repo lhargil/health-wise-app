@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'projects/health-wise-app/src/environments/environment';
+import { AuthServiceX } from '../../auth-service.component';
 
 @Component({
   selector: 'hwa-sidebar-layout',
@@ -7,10 +8,18 @@ import { environment } from 'projects/health-wise-app/src/environments/environme
   styleUrls: ['./sidebar-layout.component.scss']
 })
 export class SidebarLayoutComponent implements OnInit {
-  testUser = environment.testUser;
-  constructor() { }
+  open = false;
+
+  constructor(private authX: AuthServiceX) { }
 
   ngOnInit(): void {
   }
 
+  toggle() {
+    this.open = !this.open;
+  }
+
+  signout() {
+    this.authX.logout();
+  }
 }

@@ -6,11 +6,9 @@
       >
         <div class="w-0 flex-1 flex">
           <a href="#" class="inline-flex">
-            <img
-              class="h-8 w-auto sm:h-10"
-              src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg"
-              alt="Workflow"
-            />
+            <span class="text-2xl">
+              Health wise
+            </span>
           </a>
         </div>
         <div class="-mr-2 -my-2 md:hidden">
@@ -33,49 +31,27 @@
             </svg>
           </button>
         </div>
-        <nav class="hidden md:flex space-x-10">
-          <a
-            href="#"
-            class="text-gray-500 inline-flex items-center space-x-2 text-base leading-6 font-medium hover:text-gray-900 transition ease-in-out duration-150"
-          >
-            Solutions
-          </a>
-          <a
-            href="#"
-            class="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 transition ease-in-out duration-150"
-          >
-            Pricing
-          </a>
-          <a
-            href="#"
-            class="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 transition ease-in-out duration-150"
-          >
-            Docs
-          </a>
-          <a
-            href="#"
-            class="text-gray-500 inline-flex items-center space-x-2 text-base leading-6 font-medium hover:text-gray-900 transition ease-in-out duration-150"
-          >
-            More
-          </a>
-        </nav>
         <div
           class="hidden md:flex items-center justify-end space-x-8 md:flex-1 lg:w-0"
         >
-          <a
-            href="#"
-            class="whitespace-no-wrap text-base leading-6 font-medium text-gray-500 hover:text-gray-900 transition ease-in-out duration-150"
-          >
-            Sign in
-          </a>
-          <span class="inline-flex rounded-md shadow-sm">
-            <a
-              href="#"
-              class="whitespace-no-wrap inline-flex items-center justify-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-            >
-              Sign up
-            </a>
-          </span>
+          <div *ngIf="authX.loginChanged$ | async; then loggedOut; else loggedIn;">
+          </div>
+            <ng-template #loggedOut>
+              <button
+                (click)="this.authX.login()"
+                class="whitespace-no-wrap text-base px-4 py-2 rounded-md leading-6 font-medium text-gray-500 hover:text-gray-900 transition ease-in-out duration-150"
+              >
+                Sign in
+              </button>
+            </ng-template>
+            <ng-template #loggedIn>
+              <button
+                (click)="this.authX.logout()"
+                class="whitespace-no-wrap text-base px-4 py-2 rounded-md leading-6 font-medium text-gray-500 hover:text-gray-900 transition ease-in-out duration-150"
+              >
+                Sign out
+              </button>
+            </ng-template>
         </div>
       </div>
     </div>

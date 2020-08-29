@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthServiceX } from '../core/auth-service.component';
 
 @Component({
   selector: 'hwa-home',
@@ -7,9 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authX: AuthServiceX) { }
 
   ngOnInit(): void {
   }
-
 }
