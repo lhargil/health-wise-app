@@ -1,22 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthServiceX } from './core/auth-service.component';
 import { Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
+import { Subscription, from } from 'rxjs';
 
 @Component({
   selector: 'hwa-signin-callback',
-  template: '<div><h1>Signing you in...</h1></div>',
+  templateUrl: './signin-redirect-callback.component.html',
 })
-export class SigninRedirectCallbackComponent implements OnInit {
+export class SigninRedirectCallbackComponent implements OnInit, OnDestroy {
+  private sub: Subscription;
   constructor(private authX: AuthServiceX, private router: Router) {}
 
   ngOnInit() {
-    this.authX.completeLogin().then((user) => {
-      this.router.navigate(['admin/dashboard'], { replaceUrl: true });
-    });
-    // this.authService.isAuthenticated$
-    //   .pipe(tap((_) => this.router.navigate(['admin/dashboard'])))
-    //   .subscribe();
+    this.sub = from(this.authX.completeLogin())
+      .pipe(
+        switchMap(_ => this.router.navigate(['admin/dashboard'], { replaceUrl: true }))
+      ).subscribe();
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 }

@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { UserManager, User } from 'oidc-client';
 import { CoreModule } from './core.module';
-import { Constants } from '../constants';
 import { Subject, BehaviorSubject, from, Observable } from 'rxjs';
 import { IAuthConfig } from '../../environments/ienvironment';
 import { AUTH_CONFIG } from './tokens';

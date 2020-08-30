@@ -12,11 +12,28 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderInterceptor } from './shared/loader/loader.interceptor';
 
 @NgModule({
-  declarations: [AppComponent, SigninRedirectCallbackComponent, PageNotFoundComponent, HomeComponent, AdminComponent, UnauthorizedComponent],
-  imports: [CoreModule, AppRoutingModule, SidebarLayoutModule, SlideInModule],
-  providers: [],
+  declarations: [
+    AppComponent,
+    SigninRedirectCallbackComponent,
+    PageNotFoundComponent,
+    HomeComponent,
+    AdminComponent,
+    UnauthorizedComponent,
+  ],
+  imports: [
+    CoreModule,
+    AppRoutingModule,
+    SidebarLayoutModule,
+    SlideInModule,
+    SharedModule,
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

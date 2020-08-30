@@ -57,7 +57,6 @@ module.exports = (config, options) => {
         replacement: process.env.HEALTHWISE_AUTHCONFIG_APIID,
       },
     ]),
-    new WebpackNotifier({title: 'Webpacking HealthWise', excludeWarnings: true, alwaysNotify: false, skipFirstNotification: true}),
     new CopyPlugin({
       patterns: [
         {
@@ -65,7 +64,8 @@ module.exports = (config, options) => {
           to: 'assets/js/oidc-client.min.js'
         }
       ]
-    })
+    }),
+    new WebpackNotifier({title: 'Webpacking HealthWise', excludeWarnings: true, alwaysNotify: false, skipFirstNotification: true}),
   );
   config.module.rules.push({
     test: /\.scss$/,

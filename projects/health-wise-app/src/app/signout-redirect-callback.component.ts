@@ -1,17 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthServiceX } from './core/auth-service.component';
 import { Router } from '@angular/router';
+import { from, Subscription } from 'rxjs';
+import { switchMap, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'hwa-signout-redirect',
-  template: `<div><h1>Signing you out...</h1></div>`,
+  templateUrl: './signout-redirect-callback.component.html',
 })
-export class SignoutRedirectCallbackComponent implements OnInit {
+export class SignoutRedirectCallbackComponent implements OnInit, OnDestroy {
+  private sub: Subscription;
   constructor(private authService: AuthServiceX, private router: Router) {}
 
   ngOnInit() {
-    this.authService.completeLogout().then((_) => {
-      this.router.navigate(['/'], { replaceUrl: true });
-    });
+    this.sub = from(this.authService.completeLogout())
+      .pipe(
+        delay(1500),
+        switchMap(_ => this.router.navigate(['/'], { replaceUrl: true }))
+      ).subscribe();
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 }

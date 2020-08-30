@@ -28,7 +28,6 @@ export class AuthGuard implements CanActivate {
 
     return from(this.authX.isLoggedIn())
       .pipe(
-        tap(console.log),
         map((loggedIn: boolean) => {
           if (loggedIn) {
             return true;
