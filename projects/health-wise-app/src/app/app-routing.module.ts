@@ -6,6 +6,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 const routes: Routes = [
   {
@@ -41,12 +42,14 @@ const routes: Routes = [
   {
     path: 'signin-callback',
     component: SigninRedirectCallbackComponent,
-    canActivate: [AuthGuard],
   },
   {
     path: 'signout-callback',
     component: SignoutRedirectCallbackComponent,
-    canActivate: [AuthGuard],
+  },
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent
   },
   {
     path: '**',

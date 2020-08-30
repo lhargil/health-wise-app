@@ -4,15 +4,19 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError, from } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { concatMap, mergeMap, catchError } from 'rxjs/operators';
 import { AuthServiceX } from '../auth-service.component';
+import { STATUS_CODES } from 'http';
+import { STATUS_CODE_INFO } from 'angular-in-memory-web-api';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthServiceX) {}
+  constructor(private authService: AuthServiceX, private router: Router) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -34,7 +38,15 @@ export class AuthInterceptor implements HttpInterceptor {
           setHeaders: { Authorization: `Bearer ${token}` },
         });
 
-        return next.handle(authReq).toPromise();
+        return next.handle(authReq)
+          .pipe(
+            tap((_: any) => {}, (error: HttpErrorResponse) => {
+              if (error && (error.status == STATUS_CODE_INFO[401].code || error.status == STATUS_CODE_INFO[403].code)) {
+                this.router.navigate(['/unauthorized']);
+              }
+            })
+          )
+          .toPromise();
       })
     );
   }

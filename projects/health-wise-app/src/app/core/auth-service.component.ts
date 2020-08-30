@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { UserManager, User } from 'oidc-client';
 import { CoreModule } from './core.module';
 import { Constants } from '../constants';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject, from, Observable } from 'rxjs';
 import { IAuthConfig } from '../../environments/ienvironment';
 import { AUTH_CONFIG } from './tokens';
 
@@ -13,6 +13,7 @@ export class AuthServiceX {
 
   private loginChangedSubject = new Subject<boolean>();
   loginChanged$ = this.loginChangedSubject.asObservable();
+
   constructor(@Inject(AUTH_CONFIG) readonly authConfig: IAuthConfig) {
     const stsSettings = {
       authority: `https://${authConfig.stsAuthority}/`,

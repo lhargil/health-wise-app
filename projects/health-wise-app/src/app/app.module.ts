@@ -11,9 +11,10 @@ import { SigninRedirectCallbackComponent } from './signin-redirect-callback.comp
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 @NgModule({
-  declarations: [AppComponent, SigninRedirectCallbackComponent, PageNotFoundComponent, HomeComponent, AdminComponent],
+  declarations: [AppComponent, SigninRedirectCallbackComponent, PageNotFoundComponent, HomeComponent, AdminComponent, UnauthorizedComponent],
   imports: [CoreModule, AppRoutingModule, SidebarLayoutModule, SlideInModule],
   providers: [],
   bootstrap: [AppComponent],
