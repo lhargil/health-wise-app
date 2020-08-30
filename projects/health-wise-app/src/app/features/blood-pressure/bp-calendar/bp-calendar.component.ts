@@ -85,12 +85,9 @@ export class BpCalendarComponent implements OnInit {
           return {
             id: reading.id,
             title: `Systole: ${reading.systole} | Diastole: ${reading.diastole} | Heart rate: ${reading.heartRate}`,
-            start: startOfDay(
-              utcToZonedTime(
-                new Date(reading.dateTaken),
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-              )
-              // format(reading.dateTaken, 'yyyy-MM-dd HH:mm:ssZ', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+            start: utcToZonedTime(
+              new Date(reading.dateTaken),
+              Intl.DateTimeFormat().resolvedOptions().timeZone
             ),
             allDay: true,
             color: colors.red,
@@ -138,11 +135,10 @@ export class BpCalendarComponent implements OnInit {
         this.activeDayIsOpen = true;
       }
       this.viewDate = date;
-
       if (events.length === 0) {
         this.slideInService.show({
           heading: 'Add new blood pressure reading',
-          formData: this.getDefaultReading(date),
+          formData: this.getDefaultReading(this.viewDate),
           modalMode: ModalModes.Create,
           component: BloodPressureFormShellComponent,
           handleSave: this.handleSave(),
@@ -152,13 +148,12 @@ export class BpCalendarComponent implements OnInit {
   }
 
   private getDefaultReading(date: Date): BloodPressureReading {
-    console.log();
     return {
       id: '',
       systole: 140,
       diastole: 80,
       heartRate: 80,
-      dateTaken: date.toLocaleDateString(),
+      dateTaken: date.toString(),
     } as BloodPressureReading;
   }
 
@@ -190,7 +185,6 @@ export class BpCalendarComponent implements OnInit {
       afterSave?: () => void
     ) => {
       if (!updatedBloodPressureReading.id) {
-        // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         updatedBloodPressureReading.dateTaken = formatISO(
           new Date(updatedBloodPressureReading.dateTaken),
           {
