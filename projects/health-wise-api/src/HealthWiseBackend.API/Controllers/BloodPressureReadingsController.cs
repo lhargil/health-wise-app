@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
@@ -84,7 +85,7 @@ namespace HealthWiseBackend.API.Controllers
         return NotFound("The blood pressure reading to remove does not exist");
       }
 
-     _healthWiseDbContext.Remove(bloodPressureReadingToRemove);
+      _healthWiseDbContext.Remove(bloodPressureReadingToRemove);
 
       await _healthWiseDbContext.SaveChangesAsync();
 

@@ -2,6 +2,7 @@ using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Entities;
 using HealthWiseBackend.API.Options;
+using IdentityModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -26,7 +27,7 @@ namespace HealthWiseBackend.API.Middlewares
 
     public async Task Invoke(HttpContext httpContext, IContextData svc)
     {
-      var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+      var userId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject);
       if (String.IsNullOrEmpty(userId))
       {
         await _next(httpContext);
