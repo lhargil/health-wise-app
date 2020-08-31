@@ -75,13 +75,6 @@ export class BpCalendarComponent implements OnInit {
     map((state: HealthStore) => {
       return state.bloodPressureReadings.map(
         (reading: BloodPressureReading) => {
-          console.log(
-            reading.dateTaken,
-            utcToZonedTime(
-              new Date(reading.dateTaken),
-              Intl.DateTimeFormat().resolvedOptions().timeZone
-            )
-          );
           return {
             id: reading.id,
             title: `Systole: ${reading.systole} | Diastole: ${reading.diastole} | Heart rate: ${reading.heartRate}`,
