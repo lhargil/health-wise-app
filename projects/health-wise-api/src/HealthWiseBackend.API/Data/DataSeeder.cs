@@ -1,7 +1,7 @@
 using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Entities;
-using System;
-using System.Collections.Generic;
+using HealthWiseBackend.API.Options;
+using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,11 +9,11 @@ namespace HealthWiseBackend.API.Data
 {
   public class DataSeeder
   {
-    public static async Task Seed(HealthWiseDbContext healthWiseDbContext, IContextData contextData, IDateTimeManager datetimeManager)
+    public static async Task Seed(HealthWiseDbContext healthWiseDbContext, IContextData contextData, IDateTimeManager datetimeManager, IOptions<AppOptions> appOptions)
     {
       if (!healthWiseDbContext.BloodPressureReadings.Any())
       {
-        var personId = "auth0|5f38c32e2f9cdc006774a4dd";
+        var personId = appOptions.Value.TestUser;
 
         var bp1 = new BloodPressureReading(119, 82, 80);
         bp1.DateTaken = datetimeManager.Today;
