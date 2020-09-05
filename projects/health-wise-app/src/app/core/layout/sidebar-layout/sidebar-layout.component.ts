@@ -9,6 +9,7 @@ import { AuthServiceX } from '../../auth-service.component';
 })
 export class SidebarLayoutComponent implements OnInit {
   open = false;
+  show = false;
 
   constructor(public authX: AuthServiceX) { }
 
@@ -16,7 +17,17 @@ export class SidebarLayoutComponent implements OnInit {
   }
 
   toggle() {
-    this.open = !this.open;
+    this.show = !this.show;
+    setTimeout(() => {
+      this.open = !this.open;
+    }, 100);
+  }
+
+  hide() {
+    this.open = false;
+    setTimeout(() => {
+      this.show = false;
+    }, 500);
   }
 
   signout() {
