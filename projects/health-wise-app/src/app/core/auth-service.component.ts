@@ -16,7 +16,7 @@ export class AuthServiceX {
   loginChanged$ = this.loginChangedSubject.asObservable();
 
   private userProfileInformationSubject = new BehaviorSubject<UserProfileInformation | undefined>(undefined);
-  userProfileInformation$ = this.userProfileInformationSubject.asObservable().pipe(tap(console.log));
+  userProfileInformation$ = this.userProfileInformationSubject.asObservable();
 
   constructor(@Inject(AUTH_CONFIG) readonly authConfig: IAuthConfig) {
     const stsSettings = {
