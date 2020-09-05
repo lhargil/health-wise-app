@@ -4,6 +4,8 @@ import { CoreModule } from './core.module';
 import { Subject, BehaviorSubject, from, Observable } from 'rxjs';
 import { IAuthConfig } from '../../environments/ienvironment';
 import { AUTH_CONFIG } from './tokens';
+import { UserProfileInformation } from './models';
+import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthServiceX {
@@ -12,6 +14,9 @@ export class AuthServiceX {
 
   private loginChangedSubject = new Subject<boolean>();
   loginChanged$ = this.loginChangedSubject.asObservable();
+
+  private userProfileInformationSubject = new BehaviorSubject<UserProfileInformation | undefined>(undefined);
+  userProfileInformation$ = this.userProfileInformationSubject.asObservable().pipe(tap(console.log));
 
   constructor(@Inject(AUTH_CONFIG) readonly authConfig: IAuthConfig) {
     const stsSettings = {
@@ -48,9 +53,15 @@ export class AuthServiceX {
   isLoggedIn(): Promise<boolean> {
     return this.userManager.getUser().then((user: User) => {
       const userCurrent = !!user && !user.expired;
-
       if (this.user !== user) {
         this.loginChangedSubject.next(userCurrent);
+        const { name, nickname, picture } = user.profile;
+        const profile = {
+          name: name || '',
+          nickname: nickname || '',
+          picture: picture || ''
+        };
+        this.userProfileInformationSubject.next(profile);
       }
       this.user = user;
       return userCurrent;
@@ -61,6 +72,13 @@ export class AuthServiceX {
     return this.userManager.signinRedirectCallback().then((user) => {
       this.user = user;
       this.loginChangedSubject.next(!!user && !user.expired);
+      const { name, nickname, picture } = user.profile;
+      const profile = {
+        name: name || '',
+        nickname: nickname || '',
+        picture: picture || ''
+      };
+      this.userProfileInformationSubject.next(profile);
       return user;
     });
   }

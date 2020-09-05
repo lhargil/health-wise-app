@@ -10,7 +10,7 @@ import { AuthServiceX } from '../../auth-service.component';
 export class SidebarLayoutComponent implements OnInit {
   open = false;
 
-  constructor(private authX: AuthServiceX) { }
+  constructor(public authX: AuthServiceX) { }
 
   ngOnInit(): void {
   }
