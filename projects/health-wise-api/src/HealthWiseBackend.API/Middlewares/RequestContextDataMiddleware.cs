@@ -2,8 +2,12 @@ using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
 using HealthWiseBackend.API.Entities;
 using HealthWiseBackend.API.Options;
+using IdentityModel;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,17 +25,19 @@ namespace HealthWiseBackend.API.Middlewares
       _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, IContextData svc, HealthWiseDbContext healthWiseDbContext, IOptions<AppOptions> options)
+    public async Task Invoke(HttpContext httpContext, IContextData svc)
     {
-      var email = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-      var currentUser = await healthWiseDbContext.People.FindAsync(Guid.Parse(options.Value.TestUser));
-      if (currentUser == null)
+      var userId = httpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+      if (String.IsNullOrEmpty(userId))
       {
-        throw new NullReferenceException("The user does not exist.");
+        await _next(httpContext);
+        return;
       }
-      svc.CurrentUser = currentUser;
+
+      svc.CurrentUser = new Person(userId);
+
       await _next(httpContext);
+
     }
   }
 }

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Core.Interfaces;
 using HealthWiseBackend.API.Data;
+using HealthWiseBackend.API.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace HealthWiseBackend.API
 {
@@ -27,11 +29,12 @@ namespace HealthWiseBackend.API
               var healthWiseDbContext = services.GetRequiredService<HealthWiseDbContext>();
               var contextData = services.GetRequiredService<IContextData>();
               var datetimeManager = services.GetRequiredService<IDateTimeManager>();
+              var appOptions = services.GetRequiredService<IOptions<AppOptions>>();
 
               await healthWiseDbContext.Database.MigrateAsync();
 
-              await DataSeeder.Seed(healthWiseDbContext, contextData, datetimeManager);
-            } 
+              await DataSeeder.Seed(healthWiseDbContext, contextData, datetimeManager, appOptions);
+            }
             catch (Exception exception)
             {
               var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

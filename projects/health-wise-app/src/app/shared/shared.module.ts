@@ -5,6 +5,7 @@ import { ContentHostModule } from './directives/content-host/content-host.module
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChartWrapperModule } from './chart-wrapper/chart-wrapper.module';
 import { CalendarWrapperModule } from './calendar-wrapper/calendar-wrapper.module';
+import { LoaderModule } from './loader/loader.module';
 
 @NgModule({
   declarations: [],
@@ -14,7 +15,8 @@ import { CalendarWrapperModule } from './calendar-wrapper/calendar-wrapper.modul
     ContentHostModule,
     ReactiveFormsModule,
     ChartWrapperModule,
-    CalendarWrapperModule
+    CalendarWrapperModule,
+    LoaderModule
   ],
 })
 export class SharedModule { }

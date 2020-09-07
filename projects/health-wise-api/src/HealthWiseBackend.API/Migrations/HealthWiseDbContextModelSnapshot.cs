@@ -37,9 +37,8 @@ namespace HealthWiseBackend.API.Migrations
                     b.Property<int>("HeartRate")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("PersonId")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<string>("PersonId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -53,45 +52,7 @@ namespace HealthWiseBackend.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
-
                     b.ToTable("BloodPressureReadings");
-                });
-
-            modelBuilder.Entity("HealthWiseBackend.API.Entities.Person", b =>
-                {
-                    b.Property<byte[]>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Firstname")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Lastname")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("People");
-                });
-
-            modelBuilder.Entity("HealthWiseBackend.API.Entities.BloodPressureReading", b =>
-                {
-                    b.HasOne("HealthWiseBackend.API.Entities.Person", "Person")
-                        .WithMany("BloodPressureReadings")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -8,7 +8,14 @@ export const environment: IEnvironment = {
   production: false,
   useLocalApi: false,
   healthWiseUrl: 'https://localhost:5001',
-  testUser: '6d21c451-43f8-4d72-375d-08d83df69139',
+  testUser: process.env.HEALTHWISE_TESTUSER || '',
+  authConfig: {
+    clientRoot: process.env.HEALTHWISE_AUTHCONFIG_CLIENTROOT || '',
+    apiRoot: process.env.HEALTHWISE_AUTHCONFIG_APIROOT || '',
+    stsAuthority: process.env.HEALTHWISE_AUTHCONFIG_STSAUTHORITY || '',
+    clientId: process.env.HEALTHWISE_AUTHCONFIG_CLIENTID || '',
+    audience: process.env.HEALTHWISE_AUTHCONFIG_APIID || '',
+  },
 };
 
 /*

@@ -12,12 +12,11 @@ namespace HealthWiseBackend.API.Entities
     {
       BloodPressureReadings = new List<BloodPressureReading>();
     }
-    public Person(string firstname, string lastname): this()
+    public Person(string id): this()
     {
-      Firstname = firstname;
-      Lastname = lastname;
+      Id = id;
     }
-    public Guid Id { get; private set; }
+    public string Id { get; private set; }
     public string Firstname { get; private set; }
     public string Lastname { get; private set; }
     public string Fullname { get => $"{Firstname} {Lastname}"; }

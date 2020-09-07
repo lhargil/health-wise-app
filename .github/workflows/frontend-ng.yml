@@ -5,7 +5,7 @@ name: Build Angular frontend
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, feature/integrate-auth0 ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -33,6 +33,18 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node-version }}      
     - run: npm ci
     - run: npm run build:prod
+      env:
+        HEALTHWISE_AUTHCONFIG_APIID: ${{ secrets.HEALTHWISE_AUTHCONFIG_APIID }}
+        HEALTHWISE_AUTHCONFIG_APIROOT: ${{ secrets.HEALTHWISE_AUTHCONFIG_APIROOT }} 
+        HEALTHWISE_AUTHCONFIG_CLIENTID: ${{ secrets.HEALTHWISE_AUTHCONFIG_CLIENTID }}
+        HEALTHWISE_AUTHCONFIG_CLIENTROOT: ${{ secrets.HEALTHWISE_AUTHCONFIG_CLIENTROOT }}
+        HEALTHWISE_AUTHCONFIG_STSAUTHORITY: ${{ secrets.HEALTHWISE_AUTHCONFIG_STSAUTHORITY }}
+        HEALTHWISE_TESTUSER: ${{ secrets.HEALTHWISE_TESTUSER }}
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.1.4
+      with:
+        name: health-wise-app-artifact
+        path: dist/health-wise-app
