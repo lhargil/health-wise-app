@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using HealthWiseBackend.API.Core.Interfaces;
@@ -72,6 +73,19 @@ namespace HealthWiseBackend.API.Controllers
       await _healthWiseDbContext.SaveChangesAsync();
 
       return CreatedAtAction(nameof(this.Get), new { id = bloodPressureReadingToCreate.Id }, BloodPressureReadingDto.Create(bloodPressureReadingToCreate));
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Put(Guid id, [FromBody] BloodPressureReadingInput bloodPressureReadingInput)
+    {
+      var bloodPressureReadingToEdit = new BloodPressureReading(id, bloodPressureReadingInput.Systole, bloodPressureReadingInput.Diastole, bloodPressureReadingInput.HeartRate);
+      bloodPressureReadingToEdit.DateTaken = bloodPressureReadingInput.DateTaken;
+      bloodPressureReadingToEdit.PersonId = _contextData.CurrentUser.Id;
+
+      _healthWiseDbContext.Attach<BloodPressureReading>(bloodPressureReadingToEdit).State = EntityState.Modified;
+      await _healthWiseDbContext.SaveChangesAsync();
+
+      return NoContent();
     }
 
     // DELETE api/<BloodPressureReadingsController>/5
