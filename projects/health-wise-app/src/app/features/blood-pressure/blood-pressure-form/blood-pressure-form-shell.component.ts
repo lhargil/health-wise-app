@@ -31,6 +31,7 @@ export class BloodPressureFormShellComponent
     }
 
     callback({
+      id: this.formData.id,
       systole: +this.formGroup.get('systole')?.value,
       diastole: +this.formGroup.get('diastole')?.value,
       heartRate: +this.formGroup.get('heartRate')?.value,

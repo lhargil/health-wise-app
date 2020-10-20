@@ -1,30 +1,23 @@
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import {
   CalendarEvent,
-  CalendarEventTimesChangedEvent,
   CalendarView,
 } from 'angular-calendar';
 import {
-  startOfDay,
   isSameMonth,
   isSameDay,
-  parseISO,
   formatISO,
-  parse,
 } from 'date-fns';
-import { format } from 'date-fns-tz';
-import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
+import { utcToZonedTime } from 'date-fns-tz';
 import { SlideInService } from '../../../shared/slide-in/slide-in.service';
 import { ModalModes } from '../../../shared/slide-in/modal-state';
 import { BloodPressureFormShellComponent } from '../blood-pressure-form/blood-pressure-form-shell.component';
 import { BloodPressureReading } from '../../../core/models';
-import { BloodPressureReadingsService } from '../../../core/services/blood-pressure-readings.service';
 import { map, tap, filter, switchMap } from 'rxjs/operators';
-import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
+import { Subject } from 'rxjs';
 import { HealthService } from '../../../core/services/health.service';
 import { HealthStore } from '../../../core/state';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 const colors: any = {
   red: {
@@ -52,7 +45,6 @@ export class BpCalendarComponent implements OnInit {
   activeDayIsOpen = false;
 
   private clickedReading$ = new Subject();
-  private selectedUser$ = new Subject<string>();
 
   private editReading$ = this.clickedReading$.pipe(
     switchMap((id: string) => {
@@ -92,10 +84,7 @@ export class BpCalendarComponent implements OnInit {
 
   constructor(
     private slideInService: SlideInService,
-    private healthService: HealthService,
-    private activatedRoute: ActivatedRoute,
-    @Inject(LOCALE_ID) private locale: string
-  ) {}
+    private healthService: HealthService  ) {}
 
   ngOnInit() {
     this.healthService.getBloodPressureReadings().subscribe();
@@ -177,13 +166,13 @@ export class BpCalendarComponent implements OnInit {
       updatedBloodPressureReading: BloodPressureReading,
       afterSave?: () => void
     ) => {
-      if (!updatedBloodPressureReading.id) {
-        updatedBloodPressureReading.dateTaken = formatISO(
+    updatedBloodPressureReading.dateTaken = formatISO(
           new Date(updatedBloodPressureReading.dateTaken),
           {
             representation: 'complete',
           }
         );
+    if (!updatedBloodPressureReading.id) {
         this.healthService
           .addBloodPressureReading(updatedBloodPressureReading)
           .pipe(

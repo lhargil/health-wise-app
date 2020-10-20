@@ -16,6 +16,12 @@ namespace HealthWiseBackend.API.Entities
       Diastole = diastole;
       HeartRate = heartRate;
     }
+
+    public BloodPressureReading(Guid id, int systole, int diastole, int heartRate): this(systole, diastole, heartRate)
+    {
+      Id = id;
+    }
+
     public Guid Id { get; private set; }
     public int Systole { get; private set; }
     public int Diastole { get; private set; }
