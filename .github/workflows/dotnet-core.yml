@@ -30,4 +30,14 @@ jobs:
     - name: Install dependencies
       run: dotnet restore ./projects/health-wise-api/src/HealthWiseBackend.API
     - name: Build
-      run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API --configuration Release --no-restore
+      env:
+        tag: $(git describe --tags --abbrev=0)
+        release_name: App-$tag-${{matrix.target}}"
+      run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API -o  --configuration Release --no-restore
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.0
+      with:
+        # Artifact name
+        name: health-wise-api-artifact
+        # A file, directory or wildcard pattern that describes what to upload
+        path: $release_name
