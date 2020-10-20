@@ -33,7 +33,7 @@ jobs:
       env:
         tag: $(git describe --tags --abbrev=0)
         release_name: App-$tag-${{matrix.target}}"
-      run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API -o  --configuration Release --no-restore
+      run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API --configuration Release --no-restore
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.0
       with:
