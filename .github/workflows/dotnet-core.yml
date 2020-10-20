@@ -18,8 +18,18 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: Build
+    strategy:
+      matrix:
+        kind: ['linux', 'windows']
+        include:
+          - kind: linux
+            os: ubuntu-latest
+            target: linux-x64
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
@@ -32,7 +42,7 @@ jobs:
     - name: Build
       env:
         tag: $(git describe --tags --abbrev=0)
-        release_name: App-$tag-${{matrix.target}}"
+        release_name: api-${{matrix.target}}"
       run: dotnet build ./projects/health-wise-api/src/HealthWiseBackend.API -o "$release_name" --configuration Release --no-restore
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.0
