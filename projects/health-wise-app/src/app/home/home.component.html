@@ -117,7 +117,8 @@
             <div>
               <nav class="grid row-gap-8">
                 <a
-                  href="#"
+                  *ngIf="isLoggedIn$ | async"
+                  [routerLink]="['admin/dashboard']"
                   class="-m-3 p-3 flex items-center space-x-3 rounded-md hover:bg-gray-50 transition ease-in-out duration-150"
                 >
                   <svg
@@ -149,7 +150,7 @@
                 Docs
               </a>
               <a
-                href="#"
+                href="https://lhargil.com"
                 class="text-base leading-6 font-medium text-gray-900 hover:text-gray-700 transition ease-in-out duration-150"
               >
                 Blog
