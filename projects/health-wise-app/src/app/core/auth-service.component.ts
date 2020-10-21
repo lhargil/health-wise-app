@@ -53,6 +53,10 @@ export class AuthServiceX {
   isLoggedIn(): Promise<boolean> {
     return this.userManager.getUser().then((user: User) => {
       const userCurrent = !!user && !user.expired;
+
+      if (!user) {
+        return userCurrent;
+      }
       if (this.user !== user) {
         this.loginChangedSubject.next(userCurrent);
         const { name, nickname, picture } = user.profile;
