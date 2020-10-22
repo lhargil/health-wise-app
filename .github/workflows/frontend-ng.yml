@@ -48,3 +48,33 @@ jobs:
       with:
         name: health-wise-app-artifact
         path: dist/health-wise-app
+  
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.0.5
+      with:
+        # Artifact name
+        name: health-wise-app-artifact
+        # Destination path
+        path: health-wise-app
+    - name: ssh mkdir
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HEALTHWISE_SSH_HOST }}
+        username: ${{ secrets.HEALTHWISE_SSH_USER }}
+        password: ${{ secrets.HEALTHWISE_SSH_PW }}
+        port: ${{ secrets.HEALTHWISE_SSH_PORT }}
+        script: |
+          mkdir -p ${{ secrets.HEALTHWISE_SSH_DEST}}
+    - name: copy to vps
+      uses: appleboy/scp-action@v0.1.1
+      with:
+        host: ${{ secrets.HEALTHWISE_SSH_HOST }}
+        username: ${{ secrets.HEALTHWISE_SSH_USER }}
+        password: ${{ secrets.HEALTHWISE_SSH_PW }}
+        port: ${{ secrets.HEALTHWISE_SSH_PORT }}
+        source: "health-wise-app"
+        target: ${{ secrets.HEALTHWISE_SSH_DEST}}
