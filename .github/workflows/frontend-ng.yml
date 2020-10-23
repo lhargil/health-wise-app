@@ -88,4 +88,4 @@ jobs:
         script: |
           whoami
           ls -al
-          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}.
+          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}
