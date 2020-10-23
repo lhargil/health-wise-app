@@ -87,6 +87,5 @@ jobs:
         passphrase: ${{ secrets.HEALTHWISE_SSH_PASSPHRASE }}
         script_stop: true
         script: |
-          find ${{ secrets.HEALTHWISE_SSH_DEST }} -mindepth 1 -delete
           cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}
           rm ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app
