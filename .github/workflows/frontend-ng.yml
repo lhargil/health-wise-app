@@ -82,7 +82,7 @@ jobs:
       with:
         host: ${{ secrets.HEALTHWISE_SSH_HOST }}
         username: ${{ secrets.HEALTHWISE_SSH_USER }}
-        password: ${{ secrets.HEALTHWISE_SSH_PW }}
+#         password: ${{ secrets.HEALTHWISE_SSH_PW }}
         port: ${{ secrets.HEALTHWISE_SSH_PORT }}
         key: ${{ secrets.HEALTHWISE_SSH_KEY }}
         passphrase: ${{ secrets.HEALTHWISE_SSH_PASSPHRASE }}
