@@ -67,7 +67,7 @@ jobs:
         username: ${{ secrets.HEALTHWISE_SSH_USER }}
         password: ${{ secrets.HEALTHWISE_SSH_PW }}
         port: ${{ secrets.HEALTHWISE_SSH_PORT }}
-        script: mkdir -p ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}
+        script: mkdir -p ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/client
     - name: copy to temp dest
       uses: appleboy/scp-action@v0.1.1
       with:
@@ -76,7 +76,7 @@ jobs:
         password: ${{ secrets.HEALTHWISE_SSH_PW }}
         port: ${{ secrets.HEALTHWISE_SSH_PORT }}
         source: "health-wise-app"
-        target: ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}
+        target: ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/client
     - name: copy from temp dest to dest
       uses: appleboy/ssh-action@master
       with:
@@ -87,5 +87,5 @@ jobs:
         passphrase: ${{ secrets.HEALTHWISE_SSH_PASSPHRASE }}
         script_stop: true
         script: |
-          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}
-          rm -rf ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app
+          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/client/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}/client
+          rm -rf ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/client/health-wise-app
