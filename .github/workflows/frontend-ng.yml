@@ -79,14 +79,17 @@ jobs:
 #         target: ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}
     - name: copy from temp dest to dest
       uses: appleboy/ssh-action@master
+      env:
+        destFolder: /var/www/code.lhargil.com/apps/health-wise/client
       with:
         host: ${{ secrets.HEALTHWISE_SSH_HOST }}
         username: ${{ secrets.HEALTHWISE_SSH_USER }}
         password: ${{ secrets.HEALTHWISE_SSH_PW }}
         port: ${{ secrets.HEALTHWISE_SSH_PORT }}
+        envs: destFolder
+        script_stop: true
         script: |
           whoami
           ls -al
-          echo "I am ${{ secrets.HEALTHWISE_SSH_DEST}}"
-          find ${{ secrets.HEALTHWISE_SSH_DEST}} -mindepth 1 -delete
-          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST}}
+          echo "I am $destFolder"
+          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* $destFolder
