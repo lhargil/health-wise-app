@@ -88,4 +88,4 @@ jobs:
         script_stop: true
         script: |
           cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}
-          rm ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app
+          rm -rf ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app
