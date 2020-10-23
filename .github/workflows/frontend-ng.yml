@@ -85,5 +85,8 @@ jobs:
         password: ${{ secrets.HEALTHWISE_SSH_PW }}
         port: ${{ secrets.HEALTHWISE_SSH_PORT }}
         script: |
+          whoami
+          ls -al
+          echo "I am ${{ secrets.HEALTHWISE_SSH_DEST}}"
           find ${{ secrets.HEALTHWISE_SSH_DEST}} -mindepth 1 -delete
-          sudo cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST}}
+          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST}}
