@@ -86,4 +86,4 @@ jobs:
         port: ${{ secrets.HEALTHWISE_SSH_PORT }}
         script: |
           find ${{ secrets.HEALTHWISE_SSH_DEST}} -mindepth 1 -delete
-          cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST}}
+          sudo cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST}}
