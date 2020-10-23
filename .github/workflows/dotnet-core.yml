@@ -51,3 +51,54 @@ jobs:
         name: health-wise-api-artifact
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{ github.workspace }}/api
+  release:
+    name: Release to VPS
+    strategy:
+      matrix:
+        kind: ['linux']
+        include:
+          - kind: linux
+            os: ubuntu-latest
+            target: linux-x64
+          # - kind: windows
+            # os: windows-latest
+            # target: win-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.0.5
+        with:
+          # Artifact name
+          name: health-wise-api-artifact
+          # Destination path
+          path: health-wise-api
+      - name: Create the temp directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HEALTHWISE_SSH_HOST }}
+          username: ${{ secrets.HEALTHWISE_SSH_USER }}
+          password: ${{ secrets.HEALTHWISE_SSH_PW }}
+          port: ${{ secrets.HEALTHWISE_SSH_PORT }}
+          script: mkdir -p ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/api
+      - name: Transfer the built files to the temp directory
+        uses: appleboy/scp-action@v0.1.1
+        with:
+          host: ${{ secrets.HEALTHWISE_SSH_HOST }}
+          username: ${{ secrets.HEALTHWISE_SSH_USER }}
+          password: ${{ secrets.HEALTHWISE_SSH_PW }}
+          port: ${{ secrets.HEALTHWISE_SSH_PORT }}
+          source: "health-wise-api"
+          target: ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/api
+      - name: Actually deploy and restart api service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HEALTHWISE_SSH_HOST }}
+          username: ${{ secrets.HEALTHWISE_SSH_USER }}
+          port: ${{ secrets.HEALTHWISE_SSH_PORT }}
+          key: ${{ secrets.HEALTHWISE_SSH_KEY }}
+          passphrase: ${{ secrets.HEALTHWISE_SSH_PASSPHRASE }}
+          script_stop: true
+          script: |
+            cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/api/health-wise-api/* ${{ secrets.HEALTHWISE_SSH_DEST }}/api
+            rm -rf ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/api/health-wise-api
+            systemctl restart api-healthwise.service
