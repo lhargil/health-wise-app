@@ -102,4 +102,4 @@ jobs:
           script: |
             cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/api/health-wise-api/* ${{ secrets.HEALTHWISE_SSH_DEST }}/api
             rm -rf ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/api/health-wise-api
-            systemctl restart api-healthwise.service
+            sudo systemctl restart api-healthwise.service
