@@ -53,6 +53,7 @@ jobs:
         path: ${{ github.workspace }}/api
   release:
     name: Release to VPS
+    needs: [build]
     strategy:
       matrix:
         kind: ['linux']
