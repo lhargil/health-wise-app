@@ -53,7 +53,8 @@ jobs:
         path: ${{ github.workspace }}/api
         retention-days: 1
 
-  release:    
+  release:
+    if: ${{ github.ref == 'refs/heads/master'}}    
     name: Release to VPS
     needs: [build]
     strategy:
