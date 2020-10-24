@@ -18,7 +18,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build .NET Core backend
     strategy:
       matrix:
         kind: ['linux']
@@ -51,7 +51,9 @@ jobs:
         name: health-wise-api-artifact
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{ github.workspace }}/api
-  release:
+        retention-days: 1
+
+  release:    
     name: Release to VPS
     needs: [build]
     strategy:
