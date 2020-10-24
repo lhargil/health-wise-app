@@ -48,8 +48,10 @@ jobs:
       with:
         name: health-wise-app-artifact
         path: dist/health-wise-app
+        retention-days: 1
   
   release:
+    if: ${{ github.ref == 'refs/heads/master'}} 
     needs: build
     runs-on: ubuntu-latest
     steps:
