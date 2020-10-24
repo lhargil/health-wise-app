@@ -21,7 +21,7 @@ on:
 
 jobs:
   build:
-
+    name: Build Angular frontend
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,7 +44,7 @@ jobs:
         HEALTHWISE_AUTHCONFIG_STSAUTHORITY: ${{ secrets.HEALTHWISE_AUTHCONFIG_STSAUTHORITY }}
         HEALTHWISE_TESTUSER: ${{ secrets.HEALTHWISE_TESTUSER }}
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.1.4
+      uses: actions/upload-artifact@v2.2.0
       with:
         name: health-wise-app-artifact
         path: dist/health-wise-app
@@ -52,7 +52,8 @@ jobs:
   
   release:
     if: ${{ github.ref == 'refs/heads/master'}} 
-    needs: build
+    name: Release to VPS
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
     - name: Download a Build Artifact
