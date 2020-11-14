@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthServiceX } from '../core/auth-service.component';
 import { tap } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { EnvironmentService } from '../core/services/environment.service';
 
 @Component({
   selector: 'hwa-home',
@@ -13,7 +14,7 @@ export class HomeComponent implements OnInit {
   show = false;
   open = false;
 
-  constructor(public authX: AuthServiceX) { }
+  constructor(public authX: AuthServiceX, private environmentService: EnvironmentService) { }
 
   toggle() {
     this.show = !this.show;
