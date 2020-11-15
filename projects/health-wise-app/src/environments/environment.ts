@@ -16,6 +16,7 @@ export const environment: IEnvironment = {
     clientId: process.env.HEALTHWISE_AUTHCONFIG_CLIENTID || '',
     audience: process.env.HEALTHWISE_AUTHCONFIG_APIID || '',
   },
+  imageCDN: process.env.HEALTHWISE_IMAGE_CDN || '',
 };
 
 /*

@@ -4,6 +4,7 @@ export interface IEnvironment {
   useLocalApi: boolean;
   testUser: string;
   authConfig: IAuthConfig;
+  imageCDN: string;
 }
 
 export interface IAuthConfig {

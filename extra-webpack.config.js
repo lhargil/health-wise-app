@@ -37,6 +37,9 @@ module.exports = (config, options) => {
       "process.env.HEALTHWISE_TESTUSER": JSON.stringify(
         process.env.HEALTHWISE_TESTUSER
       ),
+      "process.env.HEALTHWISE_IMAGE_CDN": JSON.stringify(
+        process.env.HEALTHWISE_IMAGE_CDN
+      )
     }),
     new HtmlWebpackPlugin({
       filename: "assets/silent-callback.html",
