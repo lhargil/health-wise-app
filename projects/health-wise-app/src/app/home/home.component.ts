@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   isLoggedIn$ = from(this.authX.isLoggedIn());
   show = false;
   open = false;
+  currentYear = new Date(Date.now()).getFullYear();
 
   constructor(public authX: AuthServiceX, private environmentService: EnvironmentService) { }
 
