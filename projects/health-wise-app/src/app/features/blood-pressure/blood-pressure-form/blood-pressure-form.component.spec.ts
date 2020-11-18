@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BloodPressureFormComponent } from './blood-pressure-form.component';
 
@@ -6,7 +6,7 @@ describe('BloodPressureFormComponent', () => {
   let component: BloodPressureFormComponent;
   let fixture: ComponentFixture<BloodPressureFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ BloodPressureFormComponent ]
     })
