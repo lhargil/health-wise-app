@@ -33,7 +33,10 @@
             ],
             "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
             "customWebpackConfig": {
-              "path": "extra-webpack.config.js"
+              "path": "extra-webpack.config.js",
+              "mergeStrategies": {
+                "externals": "replace"
+              }
             },
             "allowedCommonJsDependencies": [
               "angular-calendar",
