@@ -90,5 +90,6 @@ jobs:
         passphrase: ${{ secrets.HEALTHWISE_SSH_PASSPHRASE }}
         script_stop: true
         script: |
+          rm -rfv ${{ secrets.HEALTHWISE_SSH_DEST }}/client/
           cp -r -f ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/client/health-wise-app/* ${{ secrets.HEALTHWISE_SSH_DEST }}/client
           rm -rf ${{ secrets.HEALTHWISE_SSH_TEMP_DEST}}/client/health-wise-app
